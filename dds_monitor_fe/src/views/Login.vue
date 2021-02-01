@@ -26,7 +26,7 @@
 </template>
 
 <script>
-// import { loginApi } from '@/api/api'
+import { loginApi } from '@/api/api'
 
 export default {
   data () {
@@ -75,6 +75,18 @@ export default {
       this.$refs.loginFormRef.resetFields()
     },
     login () {
+      this.$refs.loginFormRef.validate(valid => {
+        if (!valid) return
+        const obj = {
+          nickname: this.loginForm.username,
+          password: this.loginForm.password
+        }
+        console.log(1, this.$store.state.user)
+        loginApi.login(obj).then(value => {
+          this.$store.commit('user.set_token', value.data.token)
+          this.$store.commit('user.set_username', value.data.nickname)
+        })
+      })
       // this.$refs.loginFormRef.validate((valid) => {
       //   if (valid) {
       //     const obj = {
@@ -85,9 +97,9 @@ export default {
       //       .then((v) => {
       //         if (v.status === 200) {
       //           // 设置token，userinfo
-      //           this.$store.commit('user/set_token', v.data.token)
-      //           this.$store.commit('user/set_username', v.data.nickname)
-      //           this.$store.commit('user/set_realname', v.data.nickname)
+      //           this.$store.commit('modules/set_token', v.data.token)
+      //           this.$store.commit('modules/set_username', v.data.nickname)
+      //           this.$store.commit('modules/set_realname', v.data.nickname)
       //           this.$router.push({ path: '/home' })
       //         } else {
       //           this.$message.error(v.msg)
