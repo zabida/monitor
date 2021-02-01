@@ -83,8 +83,9 @@ export default {
         }
         console.log(1, this.$store.state.user)
         loginApi.login(obj).then(value => {
-          this.$store.commit('user.set_token', value.data.token)
-          this.$store.commit('user.set_username', value.data.nickname)
+          this.$store.commit('user/set_token', value.data.token)
+          this.$store.commit('user/set_username', value.data.nickname)
+          this.$router.push({ path: '/home' })
         })
       })
       // this.$refs.loginFormRef.validate((valid) => {

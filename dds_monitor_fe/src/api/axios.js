@@ -5,14 +5,14 @@ import {
 } from 'element-plus'
 import store from '../store'
 
-axios.defaults.headers.post['Content-type'] = 'application/json'
-axios.defaults.headers.put['Content-type'] = 'application/json'
-axios.defaults.headers.patch['Content-type'] = 'application/json'
+axios.defaults.headers.post['Content-Type'] = 'application/json'
+axios.defaults.headers.put['Content-Type'] = 'application/json'
+axios.defaults.headers.patch['Content-Type'] = 'application/json'
 
 let loadingGvm = null
 const config = {
-  baseUrl: '/api',
-  timeout: 600000,
+  baseURL: process.env.NODE_ENV === 'development' ? '/api' : location.protocol + '//' + location.host + '/api',
+  timeout: 6000000,
   withCredentials: false
 }
 
@@ -39,10 +39,10 @@ _axios.interceptors.request.use(
 _axios.interceptors.response.use(
   function (response) {
     loadingGvm.close()
-    console.log(12, response)
-    if (Object.prototype.toString().call(response.data) === '[object Blob]') {
-      return response
-    }
+    console.log(12, response.data)
+    // if (Object.prototype.toString().call(response.data) === '[object Blob]') {
+    //   return response
+    // }
     if (response.data.code === 200) {
       return response.data
     } else {
@@ -50,12 +50,12 @@ _axios.interceptors.response.use(
     }
   },
   function (error) {
-    console.log(13, error.response)
+    console.log(13, error)
     const res = error.response
     console.log(14, res)
     // const msg = res.data.msg ? res.data : ''
     loadingGvm.close()
-    ElMessage.error('请求失败！')
+    ElMessage.error('请求失败!')
     return Promise.reject(error)
   }
 )
