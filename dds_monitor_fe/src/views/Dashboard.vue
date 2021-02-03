@@ -4,28 +4,33 @@
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>Dashboard</el-breadcrumb-item>
     </el-breadcrumb>
-    <div class="my_table_header"><span>工单调用</span></div>
+    <!--    <div class="my_table_header"><span>工单调用</span></div>-->
+    <span class="header_span">工单调用</span>
     <div>
       <el-table
         :data="tableData"
         style="width: 100%">
         <el-table-column
           type="index"
+          width="50"
           :index="indexMethod">
         </el-table-column>
         <el-table-column
           prop="date"
           label="工单"
+          width="250"
           align="center">
         </el-table-column>
         <el-table-column
           prop="name"
           label="调用量"
+          width="100"
           align="center">
         </el-table-column>
         <el-table-column
           prop="address"
           label="成功率"
+          width="100"
           sortable
           align="center">
         </el-table-column>
@@ -36,19 +41,18 @@
         </el-table-column>
       </el-table>
     </div>
-    <div class="page_block">
-      <el-pagination class="page_block_el"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage4"
-        :page-sizes="[10, 20, 30, 40]"
-        :page-size="10"
-        :pager-count="5"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="4000">
-      </el-pagination>
-    </div>
+    <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="currentPage4"
+      :page-sizes="[10, 20, 30, 40]"
+      :page-size="10"
+      :pager-count="5"
+      layout="total, prev, pager, next, jumper"
+      :total="4000">
+    </el-pagination>
   </el-card>
+  <el-card></el-card>
 </template>
 
 <script>
@@ -106,17 +110,22 @@ export default {
 
 <style scoped lang="scss">
 .box-card {
-  width: 780px;
+  width: 640px;
 }
-.my_table_header {
-  span {
-    color: #2087c5;
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    font-weight: bold;
-    font-size: 18px;
+
+.header_span {
+  display: block;
+  color: #093252;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+  text-align: center;
+}
+
+::v-deep {
+  .el-pager li.active {
+    color: #E6A23C;
   }
 }
-.page_block {
-  margin-top: 30px;
-}
+
 </style>
