@@ -6,6 +6,7 @@ import {
 import store from '../store'
 
 axios.defaults.headers.post['Content-Type'] = 'application/json'
+axios.defaults.headers.get['Content-Type'] = 'application/json'
 axios.defaults.headers.put['Content-Type'] = 'application/json'
 axios.defaults.headers.patch['Content-Type'] = 'application/json'
 

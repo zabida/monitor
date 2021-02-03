@@ -96,36 +96,13 @@
 </template>
 
 <script>
+import { jobApi } from '@/api/api'
+
 export default {
   name: 'jobList',
   data () {
     return {
-      shortcuts: [{
-        text: '最近一周',
-        value: (() => {
-          const end = new Date()
-          const start = new Date()
-          start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
-          return [start, end]
-        })()
-      }, {
-        text: '最近一个月',
-        value: (() => {
-          const end = new Date()
-          const start = new Date()
-          start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
-          return [start, end]
-        })()
-      }, {
-        text: '最近三个月',
-        value: (() => {
-          const end = new Date()
-          const start = new Date()
-          start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
-          return [start, end]
-        })()
-      }],
-      value1: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)],
+      value1: [new Date(2021, 2, 2, 13, 0), new Date(2021, 2, 2, 16, 10)],
       tableData: [
         {
           statistics_time: '1998-01-02 12:01:21',
@@ -137,6 +114,18 @@ export default {
           avg_cost: ''
         }
       ]
+    }
+  },
+  created () {
+    this.tableData = this.getJob()
+  },
+  methods: {
+    getJob () {
+      const params = {
+        start_time: '2021-02-03 13:00:00'
+      }
+      const res = jobApi.get_job(params)
+      console.log(21, res)
     }
   }
 }
