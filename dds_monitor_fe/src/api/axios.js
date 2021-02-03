@@ -6,7 +6,6 @@ import {
 import store from '../store'
 
 axios.defaults.headers.post['Content-Type'] = 'application/json'
-axios.defaults.headers.get['Content-Type'] = 'application/json'
 axios.defaults.headers.put['Content-Type'] = 'application/json'
 axios.defaults.headers.patch['Content-Type'] = 'application/json'
 
@@ -40,7 +39,6 @@ _axios.interceptors.request.use(
 _axios.interceptors.response.use(
   function (response) {
     loadingGvm.close()
-    console.log(12, response.data)
     // if (Object.prototype.toString().call(response.data) === '[object Blob]') {
     //   return response
     // }

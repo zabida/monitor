@@ -8,7 +8,7 @@
       <div class="search_item">
         <span class="search_item_name">统计时间</span>
         <el-date-picker class="date-picker"
-                        v-model="value1"
+                        v-model="timeStartEnd"
                         type="datetimerange"
                         range-separator="至"
                         start-placeholder="开始日期"
@@ -17,14 +17,15 @@
       </div>
       <div class="search_item">
         <span class="search_item_name">供方编号</span>
-        <el-input placeholder="供方编号" v-model="input1"></el-input>
+        <el-input placeholder="供方编号" v-model="supId"></el-input>
       </div>
       <div class="search_item">
         <span class="search_item_name">需方编号</span>
-        <el-input placeholder="需方编号" v-model="input2"></el-input>
+        <el-input placeholder="需方编号" v-model="demId"></el-input>
       </div>
       <div class="search_item">
-        <el-button class="search_bar" type="warning" circle icon="el-icon-search" size="small"></el-button>
+        <el-button class="search_bar" type="warning" circle icon="el-icon-search" size="small"
+                   @click="getJob"></el-button>
       </div>
     </div>
     <el-table
@@ -80,7 +81,7 @@
         label="操作">
         <el-button
           size="mini"
-          @click="handleDelete(scope.$index, scope.row)"><span class="button_span">详情</span></el-button>
+          @click="handleDetail(scope.$index, scope.row)"><span class="button_span">详情</span></el-button>
       </el-table-column>
     </el-table>
     <el-pagination @size-change="handleSizeChange"
@@ -96,13 +97,16 @@
 </template>
 
 <script>
-import { jobApi } from '@/api/api'
+import { jobApi, dateFormat } from '@/api/api'
 
 export default {
   name: 'jobList',
   data () {
     return {
-      value1: [new Date(2021, 2, 2, 13, 0), new Date(2021, 2, 2, 16, 10)],
+      supId: '',
+      demId: '',
+      // timeStartEnd: [new Date(2020, 2, 2, 13, 0), new Date(2022, 2, 2, 16, 10)],
+      timeStartEnd: [],
       tableData: [
         {
           statistics_time: '1998-01-02 12:01:21',
@@ -116,17 +120,24 @@ export default {
       ]
     }
   },
-  created () {
+  mounted () {
     this.tableData = this.getJob()
   },
   methods: {
     getJob () {
+      const startTime = this.timeStartEnd.length === 0 ? '' : dateFormat('YYYY-mm-dd HH:MM:SS', this.timeStartEnd[0])
+      const endTime = this.timeStartEnd.length === 0 ? '' : dateFormat('YYYY-mm-dd HH:MM:SS', this.timeStartEnd[1])
       const params = {
-        start_time: '2021-02-03 13:00:00'
+        start_time: startTime,
+        end_time: endTime,
+        dem_id: this.demId,
+        sup_id: this.supId
       }
-      const res = jobApi.get_job(params)
-      console.log(21, res)
-    }
+      jobApi.get_job(params).then(value => {
+        this.tableData = value.data.results
+      })
+    },
+    handleDetail (a, b) {}
   }
 }
 </script>
