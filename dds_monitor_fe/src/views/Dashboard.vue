@@ -38,7 +38,7 @@
             </el-table-column>
             <el-table-column align="center">
               <template #default="scope">
-                <el-button size="mini" @clieck="handle(scope)">详情</el-button>
+                <el-button size="mini" @click="handleDetail(scope)">详情</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -57,7 +57,52 @@
     </el-col>
     <el-col :span="14">
       <el-card>
-        <div id="main" style="width: 100%;height:400px;">
+        <div id="main" style="width: 100%;height:300px;"></div>
+        <div class="report_button">
+          <el-table
+            :data="tableData"
+            border
+            style="width: 100%">
+            <el-table-column
+              align="center"
+              type="index"
+              label="序号"
+              width="50">
+            </el-table-column>
+            <el-table-column
+              align="center"
+              prop="request_time"
+              label="调用时间"
+              width="180">
+            </el-table-column>
+            <el-table-column
+              align="center"
+              prop="cost"
+              label="耗时"
+              width="180">
+            </el-table-column>
+            <el-table-column
+              align="center"
+              prop="code"
+              label="code">
+            </el-table-column>
+            <el-table-column
+              align="center"
+              prop="msg"
+              label="msg">
+            </el-table-column>
+            <el-table-column
+              align="center"
+              prop=""
+              label="操作">
+              <template #default="scope">
+                <el-button
+                  size="mini"
+                  @click="handleDetail(scope.$index, scope.row)"><span class="button_span">链路追踪</span>
+                </el-button>
+              </template>
+            </el-table-column>
+          </el-table>
         </div>
       </el-card>
     </el-col>
@@ -79,7 +124,7 @@ export default {
       currentPage: 1,
       order: '',
       tableData: [],
-      jobId: 'AH677812298ac672b10',
+      jobId: '',
       reportDataX: [],
       reportDataYNo: [],
       reportDataYRate: []
@@ -87,7 +132,6 @@ export default {
   },
   mounted () {
     this.getJobStatisticsLatest()
-    this.myEcharts(this.jobId)
   },
   methods: {
     indexMethod (index) {
@@ -101,6 +145,8 @@ export default {
       jobApi.get_job_statistics_latest(params).then(value => {
         this.tableData = value.data.results
         this.count = value.data.count
+        this.jobId = this.tableData[0].job_id
+        this.myEcharts(this.jobId)
       })
     },
     handleSizeChange (val) {
@@ -111,6 +157,10 @@ export default {
     handleCurrentChange (val) {
       this.page = val
       this.getJobStatisticsLatest()
+    },
+    handleDetail (scope) {
+      this.jobId = scope.row.job_id
+      this.myEcharts(this.jobId)
     },
     myEcharts (jobId) {
       const para = {
