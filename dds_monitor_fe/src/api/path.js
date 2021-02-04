@@ -5,7 +5,8 @@ const login = {
 const job = {
   getJobStatisticsPath: '/job/job_statistics/',
   getJobStatisticsLatestPath: '/job/job_statistics_latest/',
-  getJobLogPath: '/job/job_log/'
+  getJobLogPath: '/job/job_log/',
+  getJobStatisticsReportPath: '/job/job_statistics_report/'
 }
 
 export {

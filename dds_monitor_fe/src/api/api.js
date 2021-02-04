@@ -20,10 +20,13 @@ const jobApi = {
   get_job_log: async (params) => {
     const res = await axios.get(job.getJobLogPath, { params })
     return res
+  },
+  get_job_statistics_report: async (params) => {
+    const res = await axios.get(job.getJobStatisticsReportPath, { params })
+    return res
   }
 }
 
-// eslint-disable-next-line no-unused-vars
 function dateFormat (fmt, date) {
   let ret
   const opt = {
