@@ -9,10 +9,16 @@ const loginApi = {
 }
 
 const jobApi = {
-  get_job: async (params) => {
-    console.log(121, params)
-    const res = await axios.get(job.getJobPath, { params })
-    console.log(131, res)
+  get_job_statistics: async (params) => {
+    const res = await axios.get(job.getJobStatisticsPath, { params })
+    return res
+  },
+  get_job_statistics_latest: async (params) => {
+    const res = await axios.get(job.getJobStatisticsLatestPath, { params })
+    return res
+  },
+  get_job_log: async (params) => {
+    const res = await axios.get(job.getJobLogPath, { params })
     return res
   }
 }

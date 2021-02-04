@@ -3,7 +3,9 @@ const login = {
 }
 
 const job = {
-  getJobPath: '/job/job_statistics/'
+  getJobStatisticsPath: '/job/job_statistics/',
+  getJobStatisticsLatestPath: '/job/job_statistics_latest/',
+  getJobLogPath: '/job/job_log/'
 }
 
 export {

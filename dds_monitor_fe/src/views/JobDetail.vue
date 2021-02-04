@@ -8,27 +8,29 @@
       <div class="job_info_board">
         <div class="job_info_board_float">
           <div class="job_info_items">
-            <span class="job_info_item_name">工单编号</span><span
-            class="job_info_item_value_1">&nbsp;&nbsp;jjjsjsjsjsjsjsjs</span>
+            <span class="job_info_item_name">工单编号</span>
+            <span class="job_info_item_value_1">&nbsp;&nbsp;{{ jobId ? jobId : '所有工单' }}</span>
           </div>
           <div class="job_info_items">
-            <span class="job_info_item_name">统计时间</span><span class="job_info_item_value_1">&nbsp;&nbsp;2021-02-02 19:09:01</span>
+            <span class="job_info_item_name">统计时间</span><span
+            class="job_info_item_value_1">&nbsp;&nbsp;{{ statisticsTime ? statisticsTime : '所有时间' }}</span>
           </div>
         </div>
         <div class="job_info_board_float">
           <div class="job_info_items">
             <span class="job_info_item_name">供方编号</span><span
-            class="job_info_item_value_2">&nbsp;&nbsp;jjjsjsjsjsjsjsjs</span>
+            class="job_info_item_value_2">&nbsp;&nbsp;{{ supId ? supId : '所有供方' }}</span>
           </div>
           <div class="job_info_items">
-            <span class="job_info_item_name">需方编号</span><span class="job_info_item_value_2">&nbsp;&nbsp;2021-02-02 19:09:01</span>
+            <span class="job_info_item_name">需方编号</span><span
+            class="job_info_item_value_2">&nbsp;&nbsp;{{ demId ? demId : '所有需方' }}</span>
           </div>
         </div>
       </div>
       <div class="search_item">
         <span class="search_item_name">调用时间</span>
         <el-date-picker class="date-picker"
-                        v-model="value1"
+                        v-model="timeStartEnd"
                         type="datetimerange"
                         range-separator="至"
                         start-placeholder="开始日期"
@@ -37,14 +39,15 @@
       </div>
       <div class="search_item">
         <span class="search_item_name">code</span>
-        <el-input placeholder="code" v-model="input1"></el-input>
+        <el-input placeholder="code" v-model="code"></el-input>
       </div>
       <div class="search_item">
         <span class="search_item_name">msg</span>
-        <el-input placeholder="msg" v-model="input2"></el-input>
+        <el-input placeholder="msg" v-model="msg"></el-input>
       </div>
       <div class="search_item">
-        <el-button class="search_bar" type="warning" circle icon="el-icon-search" size="small"></el-button>
+        <el-button class="search_bar" type="warning" circle icon="el-icon-search" size="small"
+                   @click="getJobLog"></el-button>
       </div>
     </div>
     <el-table
@@ -83,40 +86,102 @@
         align="center"
         prop=""
         label="操作">
-        <el-button
-          size="mini"
-          @click="handleDelete(scope.$index, scope.row)"><span class="button_span">链路追踪</span></el-button>
+        <template #default="scope">
+          <el-button
+            size="mini"
+            @click="handleDetail(scope.$index, scope.row)"><span class="button_span">链路追踪</span>
+          </el-button>
+        </template>
       </el-table-column>
     </el-table>
     <el-pagination @size-change="handleSizeChange"
                    @current-change="handleCurrentChange"
-                   :current-page="currentPage4"
+                   :current-page="currentPage"
                    :page-sizes="[10, 20, 30, 40]"
-                   :page-size="10"
+                   :page-size="pageSize"
                    :pager-count="5"
                    layout="total, sizes, prev, pager, next, jumper"
-                   :total="39000000">
+                   :total="count">
     </el-pagination>
   </el-card>
 </template>
 
 <script>
+import { dateFormat, jobApi } from '@/api/api'
+
 export default {
   name: 'jobDetail',
   data () {
     return {
-      value1: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)],
-      tableData: [
-        {
-          statistics_time: '1998-01-02 12:01:21',
-          job_id: 'wuzsw',
-          dem_id: 'ahjashjashajsahjs',
-          sup_id: '',
-          sum_use: '',
-          success_rate: '',
-          avg_cost: ''
-        }
-      ]
+      jobId: '',
+      statisticsTime: '',
+      demId: '',
+      supId: '',
+      code: '',
+      msg: '',
+      timeStartEnd: [],
+      currentPage: 1,
+      page: 1,
+      pageSize: 10,
+      count: 1,
+      rowData: {
+        request_time: '1998-01-02 12:01:21',
+        job_id: '',
+        dem_id: '',
+        sup_id: '',
+        code: '',
+        msg: ''
+      },
+      tableData: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]
+    }
+  },
+  mounted () {
+    const params = this.$router.currentRoute.value.params
+    console.log(21, params)
+    this.jobId = params.job_id
+    this.statisticsTime = params.statistics_time
+    this.demId = params.dem_id
+    this.supId = params.sup_id
+    this.getJobLog()
+  },
+  methods: {
+    getJobLog () {
+      const startTime = this.timeStartEnd.length === 0 ? '' : dateFormat('YYYY-mm-dd HH:MM:SS', this.timeStartEnd[0])
+      const endTime = this.timeStartEnd.length === 0 ? '' : dateFormat('YYYY-mm-dd HH:MM:SS', this.timeStartEnd[1])
+      const params = {
+        start_time: startTime,
+        end_time: endTime,
+        job_id: this.jobId,
+        code: this.code,
+        msg: this.msg,
+        page: this.page,
+        page_size: this.pageSize
+      }
+      jobApi.get_job_log(params).then(value => {
+        this.tableData = value.data.results
+        this.count = value.data.count
+      })
+    },
+    handleDetail (rowIndex, rowData) {
+      const data = {
+        statistics_time: rowData.statistics_time,
+        job_id: rowData.job_id,
+        dem_id: rowData.dem_id,
+        sup_id: rowData.sup_id
+      }
+      this.$router.push({
+        name: '',
+        params: data
+      })
+    },
+    handleSizeChange (val) {
+      this.page = Math.ceil(this.pageSize * this.page / val)
+      this.pageSize = val
+      this.getJobLog()
+    },
+    handleCurrentChange (val) {
+      this.page = val
+      this.getJobLog()
     }
   }
 }
@@ -178,7 +243,7 @@ export default {
       }
 
       .job_info_item_value_1, .job_info_item_value_2 {
-        color: #2E2E2E;
+        color: #E6A23C;
         font-size: 16px;
         font-weight: normal;
       }
@@ -199,9 +264,12 @@ export default {
   }
 }
 
-::v-deep {
-  .el-pager li.active {
-    color: #E6A23C;
-  }
+//::v-deep {
+//  .el-pager li.active {
+//    color: #E6A23C;
+//  }
+//}
+::v-deep(.el-pager li.active) {
+  color: #E6A23C;
 }
 </style>

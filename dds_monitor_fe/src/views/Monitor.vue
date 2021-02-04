@@ -2,7 +2,7 @@
   <el-card class="box-card">
     <el-breadcrumb separator="/">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>工单列表</el-breadcrumb-item>
+      <el-breadcrumb-item>报错监控</el-breadcrumb-item>
     </el-breadcrumb>
     <div class="search_column">
       <div class="search_item">

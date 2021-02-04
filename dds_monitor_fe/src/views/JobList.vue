@@ -79,19 +79,22 @@
         align="center"
         prop=""
         label="操作">
-        <el-button
+        <template #default="scope">
+          <el-button
           size="mini"
-          @click="handleDetail(scope.$index, scope.row)"><span class="button_span">详情</span></el-button>
+          @click="handleDetail(scope.$index, scope.row)"><span class="button_span">详情</span>
+          </el-button>
+        </template>
       </el-table-column>
     </el-table>
     <el-pagination @size-change="handleSizeChange"
                    @current-change="handleCurrentChange"
-                   :current-page="currentPage4"
+                   :current-page="currentPage"
                    :page-sizes="[10, 20, 30, 40]"
-                   :page-size="10"
+                   :page-size="pageSize"
                    :pager-count="5"
                    layout="total, sizes, prev, pager, next, jumper"
-                   :total="4000">
+                   :total="count">
     </el-pagination>
   </el-card>
 </template>
@@ -105,19 +108,21 @@ export default {
     return {
       supId: '',
       demId: '',
-      // timeStartEnd: [new Date(2020, 2, 2, 13, 0), new Date(2022, 2, 2, 16, 10)],
       timeStartEnd: [],
-      tableData: [
-        {
-          statistics_time: '1998-01-02 12:01:21',
-          job_id: 'wuzsw',
-          dem_id: 'ahjashjashajsahjs',
-          sup_id: '',
-          sum_use: '',
-          success_rate: '',
-          avg_cost: ''
-        }
-      ]
+      currentPage: 1,
+      page: 1,
+      pageSize: 10,
+      count: 1,
+      rowData: {
+        statistics_time: '1998-01-02 12:01:21',
+        job_id: 'wuzsw',
+        dem_id: '',
+        sup_id: '',
+        sum_use: '',
+        success_rate: '',
+        avg_cost: ''
+      },
+      tableData: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]
     }
   },
   mounted () {
@@ -131,13 +136,34 @@ export default {
         start_time: startTime,
         end_time: endTime,
         dem_id: this.demId,
-        sup_id: this.supId
+        sup_id: this.supId,
+        page: this.page,
+        page_size: this.pageSize
       }
-      jobApi.get_job(params).then(value => {
+      jobApi.get_job_statistics(params).then(value => {
         this.tableData = value.data.results
+        this.count = value.data.count
       })
     },
-    handleDetail (a, b) {}
+    handleDetail (rowIndex, rowData) {
+      const data = {
+        statistics_time: rowData.statistics_time,
+        job_id: rowData.job_id,
+        dem_id: rowData.dem_id,
+        sup_id: rowData.sup_id
+      }
+      console.log(20, data)
+      this.$router.push({ name: 'JobDetail', params: data })
+    },
+    handleSizeChange (val) {
+      this.page = Math.ceil(this.pageSize * this.page / val)
+      this.pageSize = val
+      this.getJob()
+    },
+    handleCurrentChange (val) {
+      this.page = val
+      this.getJob()
+    }
   }
 }
 </script>
@@ -178,9 +204,12 @@ export default {
   font-size: 12px;
 }
 
-::v-deep {
-  .el-pager li.active {
-    color: #E6A23C;
-  }
+//::v-deep {
+//  .el-pager li.active {
+//    color: #E6A23C;
+//  }
+//}
+::v-deep(.el-pager li.active) {
+  color: #E6A23C;
 }
 </style>
