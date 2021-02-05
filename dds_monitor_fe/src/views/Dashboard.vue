@@ -7,10 +7,10 @@
           <el-breadcrumb-item>Dashboard</el-breadcrumb-item>
         </el-breadcrumb>
         <!--    <div class="my_table_header"><span>工单调用</span></div>-->
-        <span class="header_span">工单调用</span>
+        <span class="left_header_span">工单调用</span>
         <div>
           <el-table
-            :data="tableData"
+            :data="tableLeftData"
             style="width: 100%">
             <el-table-column
               type="index"
@@ -57,10 +57,15 @@
     </el-col>
     <el-col :span="14">
       <el-card>
+        <div class="report_header">
+          <span class="span_name">工单编号:</span><span class="span_value">{{ tableLeftDataRow.job_id }}</span>
+          <span class="span_name">需方编号:</span><span class="span_value">{{ tableLeftDataRow.dem_id }}</span>
+          <span class="span_name">供方编号:</span><span class="span_value">{{ tableLeftDataRow.sup_id }}</span>
+        </div>
         <div id="main" style="width: 100%;height:300px;"></div>
         <div class="report_button">
           <el-table
-            :data="tableData"
+            :data="tableRightData"
             border
             style="width: 100%">
             <el-table-column
@@ -71,25 +76,25 @@
             </el-table-column>
             <el-table-column
               align="center"
-              prop="request_time"
-              label="调用时间"
+              prop="statistics_time"
+              label="统计时间"
               width="180">
             </el-table-column>
             <el-table-column
               align="center"
-              prop="cost"
-              label="耗时"
+              prop="sum_use"
+              label="调用量"
               width="180">
             </el-table-column>
             <el-table-column
               align="center"
-              prop="code"
-              label="code">
+              prop="success_rate"
+              label="成功率">
             </el-table-column>
             <el-table-column
               align="center"
-              prop="msg"
-              label="msg">
+              prop="avg_cost"
+              label="平均耗时">
             </el-table-column>
             <el-table-column
               align="center"
@@ -98,12 +103,13 @@
               <template #default="scope">
                 <el-button
                   size="mini"
-                  @click="handleDetail(scope.$index, scope.row)"><span class="button_span">链路追踪</span>
+                  @click="handleDetail(scope.$index, scope.row)"><span class="button_span">详情</span>
                 </el-button>
               </template>
             </el-table-column>
           </el-table>
         </div>
+        <span class="report_down_more">更多历史&gt;</span>
       </el-card>
     </el-col>
   </el-row>
@@ -123,8 +129,9 @@ export default {
       count: 1,
       currentPage: 1,
       order: '',
-      tableData: [],
-      jobId: '',
+      tableLeftDataRow: {},
+      tableLeftData: [],
+      tableRightData: [],
       reportDataX: [],
       reportDataYNo: [],
       reportDataYRate: []
@@ -143,10 +150,10 @@ export default {
         page_size: this.pageSize
       }
       jobApi.get_job_statistics_latest(params).then(value => {
-        this.tableData = value.data.results
+        this.tableLeftData = value.data.results
         this.count = value.data.count
-        this.jobId = this.tableData[0].job_id
-        this.myEcharts(this.jobId)
+        this.tableLeftDataRow = value.data.results ? value.data.results[0] : []
+        this.myEcharts(this.tableLeftDataRow.job_id)
       })
     },
     handleSizeChange (val) {
@@ -159,15 +166,15 @@ export default {
       this.getJobStatisticsLatest()
     },
     handleDetail (scope) {
-      this.jobId = scope.row.job_id
-      this.myEcharts(this.jobId)
+      this.tableLeftDataRow = scope.row
+      this.myEcharts(scope.row.job_id)
     },
     myEcharts (jobId) {
       const para = {
         job_id: jobId
       }
       jobApi.get_job_statistics_report(para).then(v => {
-        console.log(123, v)
+        this.tableRightData = v.data.table
         const myChart = echarts.init(document.getElementById('main'))
         const color = ['#5470C6', '#EE6666']
         const option = {
@@ -201,7 +208,7 @@ export default {
               axisTick: {
                 alignWithLabel: true
               },
-              data: v.data.data_x
+              data: v.data.report.data_x
             }
           ],
           yAxis: [
@@ -243,13 +250,13 @@ export default {
               name: '成功率',
               type: 'bar',
               yAxisIndex: 0,
-              data: v.data.data_y_rate
+              data: v.data.report.data_y_rate
             },
             {
               name: '调用量',
               type: 'bar',
               yAxisIndex: 1,
-              data: v.data.data_y_no
+              data: v.data.report.data_y_no
             }
           ]
         }
@@ -267,7 +274,7 @@ export default {
   width: 720px;
 }
 
-.header_span {
+.left_header_span {
   display: block;
   color: #093252;
   font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -278,5 +285,28 @@ export default {
 
 ::v-deep(.el-pager li.active) {
   color: #E6A23C;
+}
+
+.report_header {
+  text-align: left;
+  .span_name {
+    display: inline-block;
+    margin: 0 5px 20px 0;
+    font-weight: bold;
+  }
+  .span_value {
+    display: inline-block;
+    margin: 0 30px 20px 0;
+    color: #E6A23C;
+  }
+}
+
+.report_down_more {
+  display: inline-block;
+  float: right;
+  font-size: 12px;
+  color: #E6A23C;
+  margin: 10px 0 10px 0;
+
 }
 </style>
