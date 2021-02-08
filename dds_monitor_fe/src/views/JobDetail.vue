@@ -6,27 +6,33 @@
     </el-breadcrumb>
     <div class="search_column">
       <div class="job_info_board">
-        <div class="job_info_board_float">
-          <div class="job_info_items">
-            <span class="job_info_item_name">工单编号</span>
-            <span class="job_info_item_value_1">&nbsp;&nbsp;{{ jobId ? jobId : '所有工单' }}</span>
-          </div>
-          <div class="job_info_items">
-            <span class="job_info_item_name">统计时间</span><span
-            class="job_info_item_value_1">&nbsp;&nbsp;{{ statisticsTime ? statisticsTime : '所有时间' }}</span>
-          </div>
-        </div>
-        <div class="job_info_board_float">
-          <div class="job_info_items">
-            <span class="job_info_item_name">供方编号</span><span
-            class="job_info_item_value_2">&nbsp;&nbsp;{{ supId ? supId : '所有供方' }}</span>
-          </div>
-          <div class="job_info_items">
-            <span class="job_info_item_name">需方编号</span><span
-            class="job_info_item_value_2">&nbsp;&nbsp;{{ demId ? demId : '所有需方' }}</span>
-          </div>
-        </div>
+        <span class="span_name">统计时间</span><span class="span_value">{{ statisticsTime ? statisticsTime : '暂无选择' }}</span>
+        <span class="span_name">需方编号</span><span class="span_value">{{ demId ? demId : '暂无选择' }}</span>
+        <span class="span_name">供方编号</span><span class="span_value">{{ supId ? supId : '暂无选择'}}</span>
       </div>
+<!--      <div class="job_info_board">-->
+
+<!--        <div class="job_info_board_float">-->
+<!--          <div class="job_info_items">-->
+<!--            <span class="job_info_item_name">工单编号</span>-->
+<!--            <span class="job_info_item_value_1">&nbsp;&nbsp;{{ jobId ? jobId : '所有工单' }}</span>-->
+<!--          </div>-->
+<!--          <div class="job_info_items">-->
+<!--            <span class="job_info_item_name">统计时间</span><span-->
+<!--            class="job_info_item_value_1">&nbsp;&nbsp;{{ statisticsTime ? statisticsTime : '所有时间' }}</span>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <div class="job_info_board_float">-->
+<!--          <div class="job_info_items">-->
+<!--            <span class="job_info_item_name">供方编号</span><span-->
+<!--            class="job_info_item_value_2">&nbsp;&nbsp;{{ supId ? supId : '所有供方' }}</span>-->
+<!--          </div>-->
+<!--          <div class="job_info_items">-->
+<!--            <span class="job_info_item_name">需方编号</span><span-->
+<!--            class="job_info_item_value_2">&nbsp;&nbsp;{{ demId ? demId : '所有需方' }}</span>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
       <div class="search_item">
         <span class="search_item_name">调用时间</span>
         <el-date-picker class="date-picker"
@@ -36,6 +42,10 @@
                         start-placeholder="开始日期"
                         end-placeholder="结束日期">
         </el-date-picker>
+      </div>
+      <div class="search_item">
+        <span class="search_item_name">工单编号</span>
+        <el-input placeholder="工单编号" v-model="jobId"></el-input>
       </div>
       <div class="search_item">
         <span class="search_item_name">code</span>
@@ -65,6 +75,12 @@
         prop="request_time"
         label="调用时间"
         width="180">
+      </el-table-column>
+      <el-table-column
+        align="center"
+        prop="job_id"
+        label="工单编号"
+        width="220">
       </el-table-column>
       <el-table-column
         align="center"
@@ -137,10 +153,10 @@ export default {
   },
   mounted () {
     const params = this.$router.currentRoute.value.params
-    this.jobId = params.job_id
-    this.statisticsTime = params.statistics_time
-    this.demId = params.dem_id
-    this.supId = params.sup_id
+    this.jobId = params.jobId
+    this.statisticsTime = params.statisticsTime
+    this.demId = params.demId
+    this.supId = params.supId
     this.timeStartEnd = params.timeStartEnd ? params.timeStartEnd : []
     this.getJobLog()
   },
@@ -220,6 +236,11 @@ export default {
       margin-top: 4px;
     }
   }
+  >.search_item:nth-of-type(3) {
+    .el-input {
+      width: 250px;
+    }
+  }
 }
 
 .button_span {
@@ -228,41 +249,57 @@ export default {
 }
 
 .job_info_board {
-  display: table;
-  margin-top: 8px;
-
-  > .job_info_board_float {
-    float: left;
-
-    .job_info_items {
-      line-height: 40px;
-      margin-left: 15px;
-
-      .job_info_item_name, .job_info_item_value_2, .job_info_item_value_1 {
-        display: inline-block;
-      }
-
-      .job_info_item_value_1, .job_info_item_value_2 {
-        color: #E6A23C;
-        font-size: 16px;
-        font-weight: normal;
-      }
-
-      .job_info_item_name {
-        color: #093252;
-        font-weight: bold;
-      }
-
-      .job_info_item_value_1 {
-        width: 230px;
-      }
-
-      .job_info_item_value_2 {
-        width: auto;
-      }
-    }
+  text-align: left;
+  line-height: 40px;
+  margin-top: 5px;
+  .span_name {
+    display: inline-block;
+    color: #093252;
+    margin: 0 10px 0 15px;
+    font-weight: bold;
+  }
+  .span_value {
+    display: inline-block;
+    margin-right: 30px;
+    color: #E6A23C;
   }
 }
+//.job_info_board {
+//  display: table;
+//  margin-top: 8px;
+//
+//  > .job_info_board_float {
+//    float: left;
+//
+//    .job_info_items {
+//      line-height: 40px;
+//      margin-left: 15px;
+//
+//      .job_info_item_name, .job_info_item_value_2, .job_info_item_value_1 {
+//        display: inline-block;
+//      }
+//
+//      .job_info_item_value_1, .job_info_item_value_2 {
+//        color: #E6A23C;
+//        font-size: 16px;
+//        font-weight: normal;
+//      }
+//
+//      .job_info_item_name {
+//        color: #093252;
+//        font-weight: bold;
+//      }
+//
+//      .job_info_item_value_1 {
+//        width: 230px;
+//      }
+//
+//      .job_info_item_value_2 {
+//        width: auto;
+//      }
+//    }
+//  }
+//}
 
 //::v-deep {
 //  .el-pager li.active {

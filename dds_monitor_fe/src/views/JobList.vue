@@ -16,6 +16,10 @@
         </el-date-picker>
       </div>
       <div class="search_item">
+        <span class="search_item_name">工单编号</span>
+        <el-input placeholder="工单编号" v-model="jobId"></el-input>
+      </div>
+      <div class="search_item">
         <span class="search_item_name">供方编号</span>
         <el-input placeholder="供方编号" v-model="supId"></el-input>
       </div>
@@ -151,10 +155,10 @@ export default {
     },
     handleDetail (rowIndex, rowData) {
       const data = {
-        statistics_time: rowData.statistics_time,
-        job_id: rowData.job_id,
-        dem_id: rowData.dem_id,
-        sup_id: rowData.sup_id
+        statisticsTime: rowData.statistics_time,
+        jobId: rowData.job_id,
+        demId: rowData.dem_id,
+        supId: rowData.sup_id
       }
       console.log(20, data)
       this.$router.push({ name: 'JobDetail', params: data })
@@ -199,6 +203,11 @@ export default {
 
     .search_bar {
       margin-top: 4px;
+    }
+  }
+  >.search_item:nth-of-type(2) {
+    .el-input {
+      width: 250px;
     }
   }
 }
