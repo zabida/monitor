@@ -137,12 +137,11 @@ export default {
   },
   mounted () {
     const params = this.$router.currentRoute.value.params
-    console.log(21, params)
     this.jobId = params.job_id
     this.statisticsTime = params.statistics_time
     this.demId = params.dem_id
     this.supId = params.sup_id
-    // this.timeStartEnd = params.timeStartEnd
+    this.timeStartEnd = params.timeStartEnd ? params.timeStartEnd : []
     this.getJobLog()
   },
   methods: {

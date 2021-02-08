@@ -118,12 +118,13 @@
 <script>
 // import _ from 'lodash'
 import * as echarts from 'echarts'
-import { jobApi } from '@/api/api'
+import { dateFormat, jobApi } from '@/api/api'
 
 export default {
   name: 'dashboard',
   data () {
     return {
+      syncTime: 5,
       page: 1,
       pageSize: 10,
       count: 1,
@@ -274,17 +275,16 @@ export default {
     handleDetailRight (scope) {
       const statisticsTime = scope.row.statistics_time
       const stamp = Date.parse(statisticsTime.replace(/-/g, '/'))
-      console.log(11, stamp)
-      const startTime = Date((stamp - 60 * 5 * 1000))
-      const endTime = Date(stamp)
+      const startTime = dateFormat('YYYY-mm-dd HH:MM:SS', new Date(stamp - 60 * this.syncTime * 1000))
+      const endTime = dateFormat('YYYY-mm-dd HH:MM:SS', new Date(stamp))
       const data = {
         timeStartEnd: [startTime, endTime]
       }
+      // 参数传不了时间对象，传了也会自动转为时间字符串
       this.$router.push({ name: 'JobDetail', params: data })
     },
     moreHistory () {
       const data = { jobId: this.tableLeftDataRow.job_id }
-      console.log(112, data)
       this.$router.push({
         name: 'JobList', params: data
       })

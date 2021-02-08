@@ -28,6 +28,7 @@ const jobApi = {
 }
 
 function dateFormat (fmt, date) {
+  if (typeof (date) === 'string') return date
   let ret
   const opt = {
     'Y+': date.getFullYear().toString(), // 年
