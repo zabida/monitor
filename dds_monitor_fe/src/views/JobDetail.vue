@@ -142,6 +142,7 @@ export default {
     this.statisticsTime = params.statistics_time
     this.demId = params.dem_id
     this.supId = params.sup_id
+    // this.timeStartEnd = params.timeStartEnd
     this.getJobLog()
   },
   methods: {

@@ -38,7 +38,7 @@
             </el-table-column>
             <el-table-column align="center">
               <template #default="scope">
-                <el-button size="mini" @click="handleDetail(scope)">详情</el-button>
+                <el-button size="mini" @click="handleDetailLeft(scope)">详情</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -103,13 +103,13 @@
               <template #default="scope">
                 <el-button
                   size="mini"
-                  @click="handleDetail(scope.$index, scope.row)"><span class="button_span">详情</span>
+                  @click="handleDetailRight(scope)"><span class="button_span">详情</span>
                 </el-button>
               </template>
             </el-table-column>
           </el-table>
         </div>
-        <span class="report_down_more">更多历史&gt;</span>
+        <span class="report_down_more" @click="moreHistory">更多历史&gt;</span>
       </el-card>
     </el-col>
   </el-row>
@@ -129,6 +129,7 @@ export default {
       count: 1,
       currentPage: 1,
       order: '',
+      myChart: null,
       tableLeftDataRow: {},
       tableLeftData: [],
       tableRightData: [],
@@ -153,7 +154,7 @@ export default {
         this.tableLeftData = value.data.results
         this.count = value.data.count
         this.tableLeftDataRow = value.data.results ? value.data.results[0] : []
-        this.myEcharts(this.tableLeftDataRow.job_id)
+        this.myEcharts(this.tableLeftDataRow ? this.tableLeftDataRow.job_id : '')
       })
     },
     handleSizeChange (val) {
@@ -165,7 +166,8 @@ export default {
       this.page = val
       this.getJobStatisticsLatest()
     },
-    handleDetail (scope) {
+    handleDetailLeft (scope) {
+      console.log(123, scope.row)
       this.tableLeftDataRow = scope.row
       this.myEcharts(scope.row.job_id)
     },
@@ -174,8 +176,14 @@ export default {
         job_id: jobId
       }
       jobApi.get_job_statistics_report(para).then(v => {
+        // console
         this.tableRightData = v.data.table
-        const myChart = echarts.init(document.getElementById('main'))
+        const yNoMax = v.data.report ? Math.max(...v.data.report.data_y_no) : 400
+        const yNoMaxShow = (parseInt(yNoMax / 100) + 1) * 100
+        if (this.myChart) {
+          this.myChart.dispose()
+        }
+        this.myChart = echarts.init(document.getElementById('main'))
         const color = ['#5470C6', '#EE6666']
         const option = {
           color: color,
@@ -215,8 +223,8 @@ export default {
             {
               type: 'value',
               name: '成功率',
-              min: 80,
-              max: 110,
+              min: 0,
+              max: 100,
               position: 'left',
               axisLine: {
                 show: true,
@@ -231,8 +239,8 @@ export default {
             {
               type: 'value',
               name: '调用量(每10分钟)',
-              min: 150,
-              max: 200,
+              min: 0,
+              max: yNoMaxShow,
               position: 'right',
               axisLine: {
                 show: true,
@@ -260,8 +268,25 @@ export default {
             }
           ]
         }
-        console.log(1234, option)
-        myChart.setOption(option)
+        this.myChart.setOption(option)
+      })
+    },
+    handleDetailRight (scope) {
+      const statisticsTime = scope.row.statistics_time
+      const stamp = Date.parse(statisticsTime.replace(/-/g, '/'))
+      console.log(11, stamp)
+      const startTime = Date((stamp - 60 * 5 * 1000))
+      const endTime = Date(stamp)
+      const data = {
+        timeStartEnd: [startTime, endTime]
+      }
+      this.$router.push({ name: 'JobDetail', params: data })
+    },
+    moreHistory () {
+      const data = { jobId: this.tableLeftDataRow.job_id }
+      console.log(112, data)
+      this.$router.push({
+        name: 'JobList', params: data
       })
     }
   }
@@ -304,6 +329,7 @@ export default {
 .report_down_more {
   display: inline-block;
   float: right;
+  cursor: pointer;
   font-size: 12px;
   color: #E6A23C;
   margin: 10px 0 10px 0;

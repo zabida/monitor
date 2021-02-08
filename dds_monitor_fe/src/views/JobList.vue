@@ -106,6 +106,7 @@ export default {
   name: 'jobList',
   data () {
     return {
+      jobId: '',
       supId: '',
       demId: '',
       timeStartEnd: [],
@@ -115,7 +116,7 @@ export default {
       count: 1,
       rowData: {
         statistics_time: '1998-01-02 12:01:21',
-        job_id: 'wuzsw',
+        job_id: '',
         dem_id: '',
         sup_id: '',
         sum_use: '',
@@ -126,6 +127,8 @@ export default {
     }
   },
   mounted () {
+    const params = this.$router.currentRoute.value.params
+    this.jobId = params.jobId
     this.tableData = this.getJob()
   },
   methods: {
@@ -137,6 +140,7 @@ export default {
         end_time: endTime,
         dem_id: this.demId,
         sup_id: this.supId,
+        job_id: this.jobId,
         page: this.page,
         page_size: this.pageSize
       }
