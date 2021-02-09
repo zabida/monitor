@@ -1,15 +1,15 @@
 <template>
   <el-row :gutter="15">
     <el-col :span="10">
-      <el-card class="box-card">
+      <el-card>
         <el-breadcrumb separator="/">
           <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
           <el-breadcrumb-item>Dashboard</el-breadcrumb-item>
         </el-breadcrumb>
-        <!--    <div class="my_table_header"><span>工单调用</span></div>-->
-        <span class="left_header_span">工单调用</span>
+        <span class="left_header_span">&nbsp;&nbsp;工单调用&nbsp;&nbsp;</span>
         <div>
           <el-table
+            class="table_left"
             :data="tableLeftData"
             style="width: 100%">
             <el-table-column
@@ -186,7 +186,7 @@ export default {
           this.myChart.dispose()
         }
         this.myChart = echarts.init(document.getElementById('main'))
-        const color = ['#5470C6', '#EE6666']
+        const color = ['#143f68', '#EE6666']
         const option = {
           color: color,
 
@@ -275,6 +275,7 @@ export default {
     },
     handleDetailRight (scope) {
       const statisticsTime = scope.row.statistics_time
+      console.log(18, statisticsTime)
       const stamp = Date.parse(statisticsTime.replace(/-/g, '/'))
       const startTime = dateFormat('YYYY-mm-dd HH:MM:SS', new Date(stamp - 60 * this.syncTime * 1000))
       const endTime = dateFormat('YYYY-mm-dd HH:MM:SS', new Date(stamp))
@@ -283,13 +284,18 @@ export default {
         jobId: scope.row.job_id,
         statisticsTime: statisticsTime
       }
+      console.log(19, data)
       // 参数传不了时间对象，传了也会自动转为时间字符串
-      this.$router.push({ name: 'JobDetail', params: data })
+      this.$router.push({
+        name: 'JobDetail',
+        params: data
+      })
     },
     moreHistory () {
       const data = { jobId: this.tableLeftDataRow.job_id }
       this.$router.push({
-        name: 'JobList', params: data
+        name: 'JobList',
+        params: data
       })
     }
   }
@@ -298,12 +304,33 @@ export default {
 
 <style scoped lang="scss">
 
-.box-main-left {
-  width: 720px;
+::v-deep(.el-card) {
+  height: 800px;
+  position: relative;
+
+  .el-pagination {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    .el-pager li.active {
+      color: #E6A23C;
+    }
+  }
+  .el-table.table_left {
+    margin-top: 60px;
+  }
 }
 
 .left_header_span {
-  display: block;
+  display: inline-block;
+  position: absolute;
+  left: 50%;
+  line-height: 36px;
+  transform: translateX(-50%);
+  border-radius: 3px;
+  background-color: #E9EEF3;
   color: #093252;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   font-weight: bold;
@@ -311,17 +338,15 @@ export default {
   text-align: center;
 }
 
-::v-deep(.el-pager li.active) {
-  color: #E6A23C;
-}
-
 .report_header {
   text-align: left;
+
   .span_name {
     display: inline-block;
     margin: 0 5px 20px 0;
     font-weight: bold;
   }
+
   .span_value {
     display: inline-block;
     margin: 0 30px 20px 0;

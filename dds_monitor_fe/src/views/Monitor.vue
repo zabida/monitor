@@ -1,5 +1,5 @@
 <template>
-  <el-card class="box-card">
+  <el-card>
     <el-breadcrumb separator="/">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>报错监控</el-breadcrumb-item>
@@ -86,19 +86,22 @@
         align="center"
         prop=""
         label="操作">
-        <el-button
-          size="mini"
-          @click="handleDelete(scope.$index, scope.row)"><span class="button_span">详情</span></el-button>
+        <template #default="scope">
+          <el-button
+            size="mini"
+            @click="handleDetail(scope.row)"><span class="button_span">详情</span>
+          </el-button>
+        </template>
       </el-table-column>
     </el-table>
     <el-pagination @size-change="handleSizeChange"
                    @current-change="handleCurrentChange"
-                   :current-page="currentPage4"
+                   :current-page="currentPage"
                    :page-sizes="[10, 20, 30, 40]"
                    :page-size="10"
                    :pager-count="5"
                    layout="total, sizes, prev, pager, next, jumper"
-                   :total="4000">
+                   :total="count">
     </el-pagination>
   </el-card>
 </template>
@@ -108,49 +111,59 @@ export default {
   name: 'Monitor',
   data () {
     return {
-      shortcuts: [{
-        text: '最近一周',
-        value: (() => {
-          const end = new Date()
-          const start = new Date()
-          start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
-          return [start, end]
-        })()
-      }, {
-        text: '最近一个月',
-        value: (() => {
-          const end = new Date()
-          const start = new Date()
-          start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
-          return [start, end]
-        })()
-      }, {
-        text: '最近三个月',
-        value: (() => {
-          const end = new Date()
-          const start = new Date()
-          start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
-          return [start, end]
-        })()
-      }],
-      value1: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)],
-      tableData: [
-        {
-          statistics_time: '1998-01-02 12:01:21',
-          job_id: 'wuzsw',
-          dem_id: 'ahjashjashajsahjs',
-          sup_id: '',
-          sum_use: '',
-          success_rate: '',
-          avg_cost: ''
-        }
-      ]
+      jobId: '',
+      statisticsTime: '',
+      demId: '',
+      supId: '',
+      code: '',
+      msg: '',
+      timeStartEnd: [],
+      currentPage: 1,
+      page: 1,
+      pageSize: 10,
+      count: 0,
+      order: '-request_time',
+      rowData: {
+        request_time: '1998-01-02 12:01:21',
+        job_id: '',
+        dem_id: '',
+        sup_id: '',
+        code: '',
+        msg: ''
+      },
+      tableData: []
+    }
+  },
+  methods: {
+    handleDetail (rowData) {},
+    handleSizeChange (val) {
+      this.page = Math.ceil(this.pageSize * this.page / val)
+      this.pageSize = val
+      this.getJob()
+    },
+    handleCurrentChange (val) {
+      this.page = val
+      this.getJob()
     }
   }
 }
 </script>
 
 <style scoped lang="scss">
+::v-deep(.el-card) {
+  height: 800px;
+  position: relative;
+
+  .el-pagination {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    .el-pager li.active {
+      color: #E6A23C;
+    }
+  }
+}
 .search_column {
   background-color: #F2F2F2;
   display: table;

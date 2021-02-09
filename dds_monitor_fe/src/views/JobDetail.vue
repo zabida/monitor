@@ -1,5 +1,5 @@
 <template>
-  <el-card class="box-card">
+  <el-card>
     <el-breadcrumb separator="/">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>调用详情</el-breadcrumb-item>
@@ -211,8 +211,23 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.el-main {
-  text-align: left;
+//.el-main {
+//  text-align: left;
+//}
+
+::v-deep(.el-card) {
+  height: 810px;
+  position: relative;
+
+  .el-pagination {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    .el-pager li.active {
+      color: #E6A23C;
+    }
+  }
 }
 
 .search_column {
@@ -308,12 +323,4 @@ export default {
 //  }
 //}
 
-//::v-deep {
-//  .el-pager li.active {
-//    color: #E6A23C;
-//  }
-//}
-::v-deep(.el-pager li.active) {
-  color: #E6A23C;
-}
 </style>

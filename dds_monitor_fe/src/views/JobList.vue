@@ -1,5 +1,5 @@
 <template>
-  <el-card class="box-card">
+  <el-card>
     <el-breadcrumb separator="/">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>工单列表</el-breadcrumb-item>
@@ -85,8 +85,8 @@
         label="操作">
         <template #default="scope">
           <el-button
-          size="mini"
-          @click="handleDetail(scope.$index, scope.row)"><span class="button_span">详情</span>
+            size="mini"
+            @click="handleDetail(scope.row)"><span class="button_span">详情</span>
           </el-button>
         </template>
       </el-table-column>
@@ -110,6 +110,7 @@ export default {
   name: 'jobList',
   data () {
     return {
+      syncTime: 5,
       jobId: '',
       supId: '',
       demId: '',
@@ -155,15 +156,24 @@ export default {
         this.count = value.data.count
       })
     },
-    handleDetail (rowIndex, rowData) {
+    handleDetail (rowData) {
+      const statisticsTime = rowData.statistics_time
+      console.log(200, statisticsTime)
+      const stamp = Date.parse(statisticsTime.replace(/-/g, '/'))
+      const startTime = dateFormat('YYYY-mm-dd HH:MM:SS', new Date(stamp - 60 * this.syncTime * 1000))
+      const endTime = dateFormat('YYYY-mm-dd HH:MM:SS', new Date(stamp))
       const data = {
-        statisticsTime: rowData.statistics_time,
+        statisticsTime: statisticsTime,
+        timeStartEnd: [startTime, endTime],
         jobId: rowData.job_id,
         demId: rowData.dem_id,
         supId: rowData.sup_id
       }
-      console.log(20, data)
-      this.$router.push({ name: 'JobDetail', params: data })
+      console.log(201, data)
+      this.$router.push({
+        name: 'JobDetail',
+        params: data
+      })
     },
     handleSizeChange (val) {
       this.page = Math.ceil(this.pageSize * this.page / val)
@@ -179,6 +189,21 @@ export default {
 </script>
 
 <style scoped lang="scss">
+::v-deep(.el-card) {
+  height: 800px;
+  position: relative;
+
+  .el-pagination {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    .el-pager li.active {
+      color: #E6A23C;
+    }
+  }
+}
+
 .search_column {
   background-color: #F2F2F2;
   display: table;
@@ -207,7 +232,8 @@ export default {
       margin-top: 4px;
     }
   }
-  >.search_item:nth-of-type(2) {
+
+  > .search_item:nth-of-type(2) {
     .el-input {
       width: 250px;
     }
@@ -219,12 +245,5 @@ export default {
   font-size: 12px;
 }
 
-//::v-deep {
-//  .el-pager li.active {
-//    color: #E6A23C;
-//  }
-//}
-::v-deep(.el-pager li.active) {
-  color: #E6A23C;
-}
+
 </style>
