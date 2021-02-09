@@ -216,7 +216,7 @@ export default {
 //}
 
 ::v-deep(.el-card) {
-  height: 810px;
+  min-height: 810px;
   position: relative;
 
   .el-pagination {
@@ -227,6 +227,9 @@ export default {
     .el-pager li.active {
       color: #E6A23C;
     }
+  }
+  .el-table {
+    margin-bottom: 40px;
   }
 }
 

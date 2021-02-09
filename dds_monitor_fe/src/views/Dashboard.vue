@@ -305,7 +305,7 @@ export default {
 <style scoped lang="scss">
 
 ::v-deep(.el-card) {
-  height: 800px;
+  min-height: 800px;
   position: relative;
 
   .el-pagination {

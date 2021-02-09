@@ -190,7 +190,7 @@ export default {
 
 <style scoped lang="scss">
 ::v-deep(.el-card) {
-  height: 800px;
+  min-height: 800px;
   position: relative;
 
   .el-pagination {
@@ -201,6 +201,9 @@ export default {
     .el-pager li.active {
       color: #E6A23C;
     }
+  }
+  .el-table {
+    margin-bottom: 40px;
   }
 }
 
