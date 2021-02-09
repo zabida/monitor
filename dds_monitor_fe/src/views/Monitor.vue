@@ -186,9 +186,12 @@ export default {
   font-size: 12px;
 }
 
-::v-deep {
-  .el-pager li.active {
-    color: #E6A23C;
-  }
+//::v-deep {
+//  .el-pager li.active {
+//    color: #E6A23C;
+//  }
+//}
+::v-deep(.el-pager li.active) {
+  color: #E6A23C;
 }
 </style>

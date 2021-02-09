@@ -279,7 +279,8 @@ export default {
       const endTime = dateFormat('YYYY-mm-dd HH:MM:SS', new Date(stamp))
       const data = {
         timeStartEnd: [startTime, endTime],
-        jobId: scope.row.job_id
+        jobId: scope.row.job_id,
+        statisticsTime: statisticsTime
       }
       // 参数传不了时间对象，传了也会自动转为时间字符串
       this.$router.push({ name: 'JobDetail', params: data })
