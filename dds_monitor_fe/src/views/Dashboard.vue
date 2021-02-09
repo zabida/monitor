@@ -94,7 +94,7 @@
             <el-table-column
               align="center"
               prop="avg_cost"
-              label="平均耗时">
+              label="平均耗时(毫秒)">
             </el-table-column>
             <el-table-column
               align="center"
@@ -129,7 +129,7 @@ export default {
       pageSize: 10,
       count: 1,
       currentPage: 1,
-      order: '',
+      order: '-success_rate',
       myChart: null,
       tableLeftDataRow: {},
       tableLeftData: [],
@@ -149,7 +149,8 @@ export default {
     getJobStatisticsLatest () {
       const params = {
         page: this.page,
-        page_size: this.pageSize
+        page_size: this.pageSize,
+        order: this.order
       }
       jobApi.get_job_statistics_latest(params).then(value => {
         this.tableLeftData = value.data.results

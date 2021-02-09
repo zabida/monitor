@@ -77,7 +77,7 @@
       <el-table-column
         align="center"
         prop="avg_cost"
-        label="平均耗时">
+        label="平均耗时(毫秒)">
       </el-table-column>
       <el-table-column
         align="center"
@@ -118,6 +118,7 @@ export default {
       page: 1,
       pageSize: 10,
       count: 1,
+      order: '-statistics_time,-job_id',
       rowData: {
         statistics_time: '1998-01-02 12:01:21',
         job_id: '',
@@ -146,7 +147,8 @@ export default {
         sup_id: this.supId,
         job_id: this.jobId,
         page: this.page,
-        page_size: this.pageSize
+        page_size: this.pageSize,
+        order: this.order
       }
       jobApi.get_job_statistics(params).then(value => {
         this.tableData = value.data.results

@@ -85,7 +85,7 @@
       <el-table-column
         align="center"
         prop="cost"
-        label="耗时"
+        label="耗时(毫秒)"
         width="180">
       </el-table-column>
       <el-table-column
@@ -140,6 +140,7 @@ export default {
       page: 1,
       pageSize: 10,
       count: 1,
+      order: '-request_time',
       rowData: {
         request_time: '1998-01-02 12:01:21',
         job_id: '',
@@ -171,11 +172,17 @@ export default {
         code: this.code,
         msg: this.msg,
         page: this.page,
-        page_size: this.pageSize
+        page_size: this.pageSize,
+        order: this.order
       }
       jobApi.get_job_log(params).then(value => {
-        this.tableData = value.data.results
+        const res = value.data.results
+        this.tableData = res
         this.count = value.data.count
+        if (res) {
+          this.demId = res[0].dem_id
+          this.supId = res[0].sup_id
+        }
       })
     },
     handleDetail (rowIndex, rowData) {
