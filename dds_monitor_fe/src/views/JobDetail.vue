@@ -135,7 +135,7 @@ export default {
       supId: '',
       code: '',
       msg: '',
-      timeStartEnd: [],
+      timeStartEnd: '',
       currentPage: 1,
       page: 1,
       pageSize: 10,
@@ -158,13 +158,13 @@ export default {
     this.statisticsTime = params.statisticsTime
     this.demId = params.demId
     this.supId = params.supId
-    this.timeStartEnd = params.timeStartEnd ? params.timeStartEnd : []
+    this.timeStartEnd = params.timeStartEnd ? params.timeStartEnd : ''
     this.getJobLog()
   },
   methods: {
     getJobLog () {
-      const startTime = this.timeStartEnd.length === 0 ? '' : dateFormat('YYYY-mm-dd HH:MM:SS', this.timeStartEnd[0])
-      const endTime = this.timeStartEnd.length === 0 ? '' : dateFormat('YYYY-mm-dd HH:MM:SS', this.timeStartEnd[1])
+      const startTime = this.timeStartEnd ? dateFormat('YYYY-mm-dd HH:MM:SS', this.timeStartEnd[0]) : ''
+      const endTime = this.timeStartEnd ? dateFormat('YYYY-mm-dd HH:MM:SS', this.timeStartEnd[1]) : ''
       const params = {
         start_time: startTime,
         end_time: endTime,
@@ -179,7 +179,7 @@ export default {
         const res = value.data.results
         this.tableData = res
         this.count = value.data.count
-        if (res) {
+        if (res.length !== 0) {
           this.demId = res[0].dem_id
           this.supId = res[0].sup_id
         }
