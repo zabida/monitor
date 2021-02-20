@@ -240,7 +240,7 @@ export default {
             },
             {
               type: 'value',
-              name: '调用量(每10分钟)',
+              name: '调用量(每' + this.syncTime + '分钟)',
               min: 0,
               max: yNoMaxShow,
               position: 'right',
