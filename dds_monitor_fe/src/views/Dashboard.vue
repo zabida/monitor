@@ -202,11 +202,11 @@ export default {
           toolbox: {
             feature: {
               dataView: {
-                show: true,
+                show: false,
                 readOnly: false
               },
-              restore: { show: true },
-              saveAsImage: { show: true }
+              restore: { show: false },
+              saveAsImage: { show: false }
             }
           },
           legend: {
