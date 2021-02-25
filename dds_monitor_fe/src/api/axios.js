@@ -11,7 +11,7 @@ axios.defaults.headers.patch['Content-Type'] = 'application/json'
 
 let loadingGvm = null
 const config = {
-  baseURL: process.env.NODE_ENV === 'development' ? '/api' : location.protocol + '//' + location.host + '/api',
+  baseURL: process.env.NODE_ENV === 'development' ? '/m_api' : location.protocol + '//' + location.host + '/m_api',
   timeout: 6000000,
   withCredentials: false
 }
@@ -52,9 +52,11 @@ _axios.interceptors.response.use(
     console.log(13, error)
     const res = error.response
     console.log(14, res)
-    // const msg = res.data.msg ? res.data : ''
     loadingGvm.close()
-    ElMessage.error('请求失败!')
+
+    if (res.status === 401) {
+      ElMessage.error('请求失败。授权失败，请重新登录!')
+    } else ElMessage.error('请求失败!')
     return Promise.reject(error)
   }
 )
