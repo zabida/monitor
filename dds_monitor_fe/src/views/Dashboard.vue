@@ -271,6 +271,8 @@ export default {
           ]
         }
         this.myChart.setOption(option)
+      }).catch(function (error) {
+        console.log(23, error)
       })
     },
     handleDetailRight (scope) {
