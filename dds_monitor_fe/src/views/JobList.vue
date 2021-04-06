@@ -2,7 +2,7 @@
   <el-card>
     <el-breadcrumb separator="/">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>工单列表</el-breadcrumb-item>
+      <el-breadcrumb-item>日志列表</el-breadcrumb-item>
     </el-breadcrumb>
     <div class="search_column">
       <div class="search_item">
@@ -16,15 +16,15 @@
         </el-date-picker>
       </div>
       <div class="search_item">
-        <span class="search_item_name">工单编号</span>
+        <span class="search_item_name">日志编号</span>
         <el-input placeholder="工单编号" v-model="jobId"></el-input>
       </div>
       <div class="search_item">
-        <span class="search_item_name">供方编号</span>
+        <span class="search_item_name">X编号</span>
         <el-input placeholder="供方编号" v-model="supId"></el-input>
       </div>
       <div class="search_item">
-        <span class="search_item_name">需方编号</span>
+        <span class="search_item_name">Y编号</span>
         <el-input placeholder="需方编号" v-model="demId"></el-input>
       </div>
       <div class="search_item">
@@ -51,28 +51,28 @@
       <el-table-column
         align="center"
         prop="job_id"
-        label="工单编号"
+        label="日志编号"
         width="180">
       </el-table-column>
       <el-table-column
         align="center"
         prop="dem_id"
-        label="需方编号">
+        label="X编号">
       </el-table-column>
       <el-table-column
         align="center"
         prop="sup_id"
-        label="供方编号">
+        label="Y编号">
       </el-table-column>
       <el-table-column
         align="center"
         prop="sum_use"
-        label="调用量">
+        label="数量">
       </el-table-column>
       <el-table-column
         align="center"
         prop="success_rate"
-        label="成功率">
+        label="占比">
       </el-table-column>
       <el-table-column
         align="center"

@@ -4,8 +4,8 @@ import Login from '../views/Login'
 import Home from '../views/Home'
 import DashBoard from '../views/Dashboard'
 import JobList from '../views/JobList'
-import JobDetail from '../views/JobDetail'
-import Monitor from '../views/Monitor'
+// import JobDetail from '../views/JobDetail'
+// import Monitor from '../views/Monitor'
 
 const routes = [
   {
@@ -33,17 +33,17 @@ const routes = [
         path: '/jobList',
         name: 'JobList',
         component: JobList
-      },
-      {
-        path: '/jobDetail',
-        name: 'JobDetail',
-        component: JobDetail
-      },
-      {
-        path: '/monitor',
-        name: 'Monitor',
-        component: Monitor
       }
+      // {
+      //   path: '/jobDetail',
+      //   name: 'JobDetail',
+      //   component: JobDetail
+      // },
+      // {
+      //   path: '/monitor',
+      //   name: 'Monitor',
+      //   component: Monitor
+      // }
     ]
   }
 ]

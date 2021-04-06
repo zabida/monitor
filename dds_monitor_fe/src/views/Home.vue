@@ -2,8 +2,8 @@
   <el-container class="home-container">
     <el-header>
       <div>
-        <img src="../assets/img/brand_.png" alt="暂无图片">
-        <span>工单监控管理系统</span>
+        <img src="../assets/logo.png" alt="暂无图片">
+        <span>个人日志监控管理系统</span>
       </div>
       <el-button type="warning" @click="logout" size="small">退出</el-button>
     </el-header>
@@ -51,16 +51,16 @@ export default {
         },
         {
           path: '/jobList',
-          name: '工单列表'
-        },
-        {
-          path: '/jobDetail',
-          name: '调用详情'
-        },
-        {
-          path: '/monitor',
-          name: '报错监控'
+          name: '日志列表'
         }
+        // {
+        //   path: '/jobDetail',
+        //   name: '调用详情'
+        // },
+        // {
+        //   path: '/monitor',
+        //   name: '报错监控'
+        // }
       ]
     }
   },

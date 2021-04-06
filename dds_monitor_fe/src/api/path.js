@@ -1,5 +1,5 @@
 const login = {
-  loginPath: '/user/login/'
+  loginPath: '/account/authentication/g/'
 }
 
 const job = {

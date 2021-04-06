@@ -3,7 +3,7 @@
     <div class="login_box">
       <!-- 头像区域 -->
       <div class="avatar_box">
-        <img src="../assets/img/brand_.png" alt="公司图标">
+        <img src="../assets/logo.png" alt="图标">
       </div>
       <!-- 登录表单区域 -->
       <el-form ref="loginFormRef" :model="loginForm" :rules="loginFormRules" label-width="0px" class="login_form">
@@ -33,8 +33,8 @@ export default {
     return {
       // 这是登录表单的数据绑定对象
       loginForm: {
-        username: 'user',
-        password: '123456'
+        username: 'zabida7',
+        password: 'qwer1234'
       },
       // 这是表单的验证规则对象
       loginFormRules: {
@@ -78,13 +78,13 @@ export default {
       this.$refs.loginFormRef.validate(valid => {
         if (!valid) return
         const obj = {
-          nickname: this.loginForm.username,
+          username: this.loginForm.username,
           password: this.loginForm.password
         }
         console.log(1, this.$store.state.user)
         loginApi.login(obj).then(value => {
-          this.$store.commit('user/set_token', value.data.token)
-          this.$store.commit('user/set_username', value.data.nickname)
+          this.$store.commit('user/set_token', value.token)
+          this.$store.commit('user/set_username', value.nickname)
           this.$router.push({ path: '/home' })
         })
       })

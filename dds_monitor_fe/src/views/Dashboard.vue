@@ -6,7 +6,7 @@
           <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
           <el-breadcrumb-item>Dashboard</el-breadcrumb-item>
         </el-breadcrumb>
-        <span class="left_header_span">&nbsp;&nbsp;工单调用&nbsp;&nbsp;</span>
+        <span class="left_header_span">&nbsp;&nbsp;排行&nbsp;&nbsp;</span>
         <div>
           <el-table
             class="table_left"
@@ -19,19 +19,19 @@
             </el-table-column>
             <el-table-column
               prop="job_id"
-              label="工单"
+              label="编号"
               width="250"
               align="center">
             </el-table-column>
             <el-table-column
               prop="sum_use"
-              label="调用量"
+              label="数量"
               width="100"
               align="center">
             </el-table-column>
             <el-table-column
               prop="success_rate"
-              label="成功率"
+              label="比例"
               width="100"
               sortable
               align="center">
@@ -57,11 +57,11 @@
     </el-col>
     <el-col :span="14">
       <el-card>
-        <div class="report_header">
-          <span class="span_name">工单编号:</span><span class="span_value">{{ tableLeftDataRow.job_id }}</span>
-          <span class="span_name">需方编号:</span><span class="span_value">{{ tableLeftDataRow.dem_id }}</span>
-          <span class="span_name">供方编号:</span><span class="span_value">{{ tableLeftDataRow.sup_id }}</span>
-        </div>
+<!--        <div class="report_header">-->
+<!--          <span class="span_name">工单编号:</span><span class="span_value">{{ tableLeftDataRow.job_id }}</span>-->
+<!--          <span class="span_name">需方编号:</span><span class="span_value">{{ tableLeftDataRow.dem_id }}</span>-->
+<!--          <span class="span_name">供方编号:</span><span class="span_value">{{ tableLeftDataRow.sup_id }}</span>-->
+<!--        </div>-->
         <div id="main" style="width: 100%;height:300px;"></div>
         <div class="report_button">
           <el-table
@@ -83,13 +83,13 @@
             <el-table-column
               align="center"
               prop="sum_use"
-              label="调用量"
+              label="数量"
               width="180">
             </el-table-column>
             <el-table-column
               align="center"
               prop="success_rate"
-              label="成功率">
+              label="占比">
             </el-table-column>
             <el-table-column
               align="center"
