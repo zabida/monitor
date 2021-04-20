@@ -45,14 +45,12 @@
       <el-table-column
         align="center"
         prop="statistics_time"
-        label="统计时间"
-        width="180">
+        label="统计时间">
       </el-table-column>
       <el-table-column
         align="center"
         prop="job_id"
-        label="工单编号"
-        width="180">
+        label="工单编号">
       </el-table-column>
       <el-table-column
         align="center"
@@ -247,6 +245,5 @@ export default {
   color: #093252;
   font-size: 12px;
 }
-
 
 </style>

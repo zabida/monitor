@@ -7,6 +7,7 @@
     <div class="search_column">
       <div class="job_info_board">
         <span class="span_name">统计时间</span><span class="span_value">{{ statisticsTime ? statisticsTime : '暂无选择' }}</span>
+        <span class="span_name">工单编号</span><span class="span_value">{{ jobId ? jobId : '暂无选择' }}</span>
         <span class="span_name">需方编号</span><span class="span_value">{{ demId ? demId : '暂无选择' }}</span>
         <span class="span_name">供方编号</span><span class="span_value">{{ supId ? supId : '暂无选择'}}</span>
       </div>
@@ -43,10 +44,10 @@
                         end-placeholder="结束日期">
         </el-date-picker>
       </div>
-      <div class="search_item">
-        <span class="search_item_name">工单编号</span>
-        <el-input placeholder="工单编号" v-model="jobId"></el-input>
-      </div>
+<!--      <div class="search_item">-->
+<!--        <span class="search_item_name">工单编号</span>-->
+<!--        <el-input placeholder="工单编号" v-model="jobId"></el-input>-->
+<!--      </div>-->
       <div class="search_item">
         <span class="search_item_name">code</span>
         <el-input placeholder="code" v-model="code"></el-input>
@@ -73,20 +74,22 @@
       <el-table-column
         align="center"
         prop="request_time"
-        label="调用时间"
-        width="180">
+        label="调用时间">
+      </el-table-column>
+      <el-table-column
+        align="center"
+        prop="busi_serial_no"
+        label="序列号">
       </el-table-column>
       <el-table-column
         align="center"
         prop="job_id"
-        label="工单编号"
-        width="220">
+        label="工单编号">
       </el-table-column>
       <el-table-column
         align="center"
         prop="cost"
-        label="耗时(毫秒)"
-        width="180">
+        label="耗时(毫秒)">
       </el-table-column>
       <el-table-column
         align="center"

@@ -6,9 +6,9 @@
     </el-breadcrumb>
     <div class="search_column">
       <div class="search_item">
-        <span class="search_item_name">统计时间</span>
+        <span class="search_item_name">调用时间</span>
         <el-date-picker class="date-picker"
-                        v-model="value1"
+                        v-model="timeStartEnd"
                         type="datetimerange"
                         range-separator="至"
                         start-placeholder="开始日期"
@@ -16,23 +16,24 @@
         </el-date-picker>
       </div>
       <div class="search_item">
+        <span class="search_item_name">工单编号</span>
+        <el-input placeholder="工单编号" v-model="jobId"></el-input>
+      </div>
+      <div class="search_item">
         <span class="search_item_name">供方编号</span>
-        <el-input placeholder="供方编号" v-model="input1"></el-input>
+        <el-input placeholder="供方编号" v-model="supId"></el-input>
       </div>
       <div class="search_item">
         <span class="search_item_name">需方编号</span>
-        <el-input placeholder="需方编号" v-model="input2"></el-input>
-      </div>
-      <div class="search_item">
-        <span class="search_item_name">工单号</span>
-        <el-input placeholder="工单号" v-model="input2"></el-input>
+        <el-input placeholder="需方编号" v-model="demId"></el-input>
       </div>
       <div class="search_item">
         <span class="search_item_name">code</span>
-        <el-input placeholder="code" v-model="input2"></el-input>
+        <el-input placeholder="code" v-model="code"></el-input>
       </div>
       <div class="search_item">
-        <el-button class="search_bar" type="warning" circle icon="el-icon-search" size="small"></el-button>
+        <el-button class="search_bar" type="warning" circle icon="el-icon-search" size="small"
+                   @click="getJob"></el-button>
       </div>
     </div>
     <el-table
@@ -47,15 +48,18 @@
       </el-table-column>
       <el-table-column
         align="center"
-        prop="statistics_time"
-        label="统计时间"
-        width="180">
+        prop="request_time"
+        label="调用时间">
+      </el-table-column>
+      <el-table-column
+        align="center"
+        prop="busi_serial_no"
+        label="序列号">
       </el-table-column>
       <el-table-column
         align="center"
         prop="job_id"
-        label="工单编号"
-        width="180">
+        label="工单编号">
       </el-table-column>
       <el-table-column
         align="center"
@@ -69,18 +73,18 @@
       </el-table-column>
       <el-table-column
         align="center"
-        prop="sum_use"
-        label="调用量">
+        prop="cost"
+        label="耗时(毫秒)">
       </el-table-column>
       <el-table-column
         align="center"
-        prop="success_rate"
-        label="成功率">
+        prop="code"
+        label="code">
       </el-table-column>
       <el-table-column
         align="center"
-        prop="avg_cost"
-        label="平均耗时">
+        prop="msg"
+        label="msg">
       </el-table-column>
       <el-table-column
         align="center"
@@ -89,7 +93,7 @@
         <template #default="scope">
           <el-button
             size="mini"
-            @click="handleDetail(scope.row)"><span class="button_span">详情</span>
+            @click="handleDetail(scope.$index, scope.row)"><span class="button_span">链路追踪</span>
           </el-button>
         </template>
       </el-table-column>
@@ -98,7 +102,7 @@
                    @current-change="handleCurrentChange"
                    :current-page="currentPage"
                    :page-sizes="[10, 20, 30, 40]"
-                   :page-size="10"
+                   :page-size="pageSize"
                    :pager-count="5"
                    layout="total, sizes, prev, pager, next, jumper"
                    :total="count">
@@ -107,35 +111,73 @@
 </template>
 
 <script>
+import { jobApi, dateFormat } from '@/api/api'
+
 export default {
-  name: 'Monitor',
+  name: 'jobList',
   data () {
     return {
+      syncTime: 5,
       jobId: '',
-      statisticsTime: '',
-      demId: '',
       supId: '',
-      code: '',
-      msg: '',
+      demId: '',
       timeStartEnd: [],
       currentPage: 1,
       page: 1,
       pageSize: 10,
-      count: 0,
-      order: '-request_time',
+      count: 1,
+      order: '-job_id',
       rowData: {
-        request_time: '1998-01-02 12:01:21',
         job_id: '',
         dem_id: '',
         sup_id: '',
-        code: '',
-        msg: ''
+        sum_use: '',
+        avg_cost: ''
       },
-      tableData: []
+      tableData: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]
     }
   },
+  mounted () {
+    this.tableData = this.getJob()
+  },
   methods: {
-    handleDetail (rowData) {},
+    getJob () {
+      const startTime = this.timeStartEnd.length === 0 ? '' : dateFormat('YYYY-mm-dd HH:MM:SS', this.timeStartEnd[0])
+      const endTime = this.timeStartEnd.length === 0 ? '' : dateFormat('YYYY-mm-dd HH:MM:SS', this.timeStartEnd[1])
+      const params = {
+        start_time: startTime,
+        end_time: endTime,
+        dem_id: this.demId,
+        sup_id: this.supId,
+        job_id: this.jobId,
+        page: this.page,
+        page_size: this.pageSize,
+        order: this.order
+      }
+      jobApi.get_job_log(params).then(value => {
+        this.tableData = value.data.results
+        this.count = value.data.count
+      })
+    },
+    handleDetail (rowData) {
+      const statisticsTime = rowData.statistics_time
+      console.log(200, statisticsTime)
+      const stamp = Date.parse(statisticsTime.replace(/-/g, '/'))
+      const startTime = dateFormat('YYYY-mm-dd HH:MM:SS', new Date(stamp - 60 * this.syncTime * 1000))
+      const endTime = dateFormat('YYYY-mm-dd HH:MM:SS', new Date(stamp))
+      const data = {
+        statisticsTime: statisticsTime,
+        timeStartEnd: [startTime, endTime],
+        jobId: rowData.job_id,
+        demId: rowData.dem_id,
+        supId: rowData.sup_id
+      }
+      console.log(201, data)
+      this.$router.push({
+        name: 'JobDetail',
+        params: data
+      })
+    },
     handleSizeChange (val) {
       this.page = Math.ceil(this.pageSize * this.page / val)
       this.pageSize = val
@@ -167,6 +209,7 @@ export default {
     margin-bottom: 40px;
   }
 }
+
 .search_column {
   background-color: #F2F2F2;
   display: table;
@@ -195,6 +238,12 @@ export default {
       margin-top: 4px;
     }
   }
+
+  > .search_item:nth-of-type(2) {
+    .el-input {
+      width: 250px;
+    }
+  }
 }
 
 .button_span {
@@ -202,12 +251,4 @@ export default {
   font-size: 12px;
 }
 
-//::v-deep {
-//  .el-pager li.active {
-//    color: #E6A23C;
-//  }
-//}
-::v-deep(.el-pager li.active) {
-  color: #E6A23C;
-}
 </style>

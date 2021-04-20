@@ -53,10 +53,10 @@ export default {
           path: '/jobList',
           name: '工单列表'
         },
-        {
-          path: '/jobDetail',
-          name: '调用详情'
-        },
+        // {
+        //   path: '/jobDetail',
+        //   name: '调用详情'
+        // },
         {
           path: '/monitor',
           name: '报错监控'

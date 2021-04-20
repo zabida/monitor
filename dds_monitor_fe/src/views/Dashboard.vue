@@ -11,7 +11,8 @@
           <el-table
             class="table_left"
             :data="tableLeftData"
-            style="width: 100%">
+            style="width: 100%"
+            @sort-change="handleSortDash">
             <el-table-column
               type="index"
               width="50"
@@ -27,13 +28,14 @@
               prop="sum_use"
               label="调用量"
               width="100"
+              sortable="custom"
               align="center">
             </el-table-column>
             <el-table-column
               prop="success_rate"
               label="成功率"
               width="100"
-              sortable
+              sortable="custom"
               align="center">
             </el-table-column>
             <el-table-column align="center">
@@ -61,12 +63,25 @@
           <span class="span_name">工单编号:</span><span class="span_value">{{ tableLeftDataRow.job_id }}</span>
           <span class="span_name">需方编号:</span><span class="span_value">{{ tableLeftDataRow.dem_id }}</span>
           <span class="span_name">供方编号:</span><span class="span_value">{{ tableLeftDataRow.sup_id }}</span>
+          <div class="rate_select">
+            <span class="rate_select_name">统计频率:</span>
+            <el-select v-model="value" placeholder="请选择" size="mini">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </div>
+
         </div>
         <div id="main" style="width: 100%;height:300px;"></div>
         <div class="report_button">
           <el-table
             :data="tableRightData"
             border
+            @sort-change="handleSortHistory"
             style="width: 100%">
             <el-table-column
               align="center"
@@ -84,16 +99,19 @@
               align="center"
               prop="sum_use"
               label="调用量"
+              sortable="custom"
               width="180">
             </el-table-column>
             <el-table-column
               align="center"
               prop="success_rate"
+              sortable="custom"
               label="成功率">
             </el-table-column>
             <el-table-column
               align="center"
               prop="avg_cost"
+              sortable="custom"
               label="平均耗时(毫秒)">
             </el-table-column>
             <el-table-column
@@ -124,11 +142,26 @@ export default {
   name: 'dashboard',
   data () {
     return {
+      value: '5',
+      options: [{
+        value: '5',
+        label: '每5分钟'
+      }, {
+        value: '60',
+        label: '每小时'
+      }, {
+        value: '1440',
+        label: '每天'
+      }, {
+        value: '10080',
+        label: '每周'
+      }],
       syncTime: 5,
       page: 1,
       pageSize: 10,
       count: 1,
       currentPage: 1,
+      origin_order: 'success_rate',
       order: '-success_rate',
       myChart: null,
       tableLeftDataRow: {},
@@ -159,6 +192,10 @@ export default {
         this.myEcharts(this.tableLeftDataRow ? this.tableLeftDataRow.job_id : '')
       })
     },
+    handleSortDash (column) {
+      this.order = (column.order === 'ascending' ? '' : '-') + (column.prop ? column.prop : this.origin_order)
+      this.getJobStatisticsLatest()
+    },
     handleSizeChange (val) {
       this.page = Math.ceil(this.pageSize * this.page / val)
       this.pageSize = val
@@ -169,7 +206,6 @@ export default {
       this.getJobStatisticsLatest()
     },
     handleDetailLeft (scope) {
-      console.log(123, scope.row)
       this.tableLeftDataRow = scope.row
       this.myEcharts(scope.row.job_id)
     },
@@ -240,7 +276,7 @@ export default {
             },
             {
               type: 'value',
-              name: '调用量(每' + this.syncTime + '分钟)',
+              name: '调用量',
               min: 0,
               max: yNoMaxShow,
               position: 'right',
@@ -279,7 +315,8 @@ export default {
       const statisticsTime = scope.row.statistics_time
       console.log(18, statisticsTime)
       const stamp = Date.parse(statisticsTime.replace(/-/g, '/'))
-      const startTime = dateFormat('YYYY-mm-dd HH:MM:SS', new Date(stamp - 60 * this.syncTime * 1000))
+      const startTime = dateFormat(
+        'YYYY-mm-dd HH:MM:SS', new Date(stamp - 60 * this.syncTime * 1000))
       const endTime = dateFormat('YYYY-mm-dd HH:MM:SS', new Date(stamp))
       const data = {
         timeStartEnd: [startTime, endTime],
@@ -292,6 +329,12 @@ export default {
         name: 'JobDetail',
         params: data
       })
+    },
+    handleSortHistory (columns) {
+      const params = {
+        order: ''
+      }
+      jobApi.get_job_statistics(params)
     },
     moreHistory () {
       const data = { jobId: this.tableLeftDataRow.job_id }
@@ -320,6 +363,7 @@ export default {
       color: #E6A23C;
     }
   }
+
   .el-table.table_left {
     margin-top: 60px;
   }
@@ -353,6 +397,22 @@ export default {
     display: inline-block;
     margin: 0 30px 20px 0;
     color: #E6A23C;
+  }
+
+  .rate_select {
+    display: inline-block;
+    float: right;
+    margin: 5px 50px 0 0;
+    font-size: 13px;
+
+    .rate_select_name {
+      display: inline-block;
+      margin: 0 10px 0 0;
+    }
+
+    .el-select {
+      width: 96px;
+    }
   }
 }
 
