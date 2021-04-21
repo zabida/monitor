@@ -12,6 +12,7 @@
             class="table_left"
             :data="tableLeftData"
             style="width: 100%"
+            :row-class-name="tableRowClassName"
             @sort-change="handleSortDash">
             <el-table-column
               type="index"
@@ -46,7 +47,6 @@
           </el-table>
         </div>
         <el-pagination
-          @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="currentPage"
           :page-sizes="[10, 20, 30, 40]"
@@ -60,17 +60,17 @@
     <el-col :span="14">
       <el-card>
         <div class="report_header">
-          <span class="span_name">工单编号:</span><span class="span_value">{{ tableLeftDataRow.job_id }}</span>
-          <span class="span_name">需方编号:</span><span class="span_value">{{ tableLeftDataRow.dem_id }}</span>
-          <span class="span_name">供方编号:</span><span class="span_value">{{ tableLeftDataRow.sup_id }}</span>
+          <span class="span_name">工单编号:</span><span class="span_value">{{ jobId }}</span>
+          <!--          <span class="span_name">需方编号:</span><span class="span_value">{{ tableLeftDataRow.dem_id }}</span>-->
+          <!--          <span class="span_name">供方编号:</span><span class="span_value">{{ tableLeftDataRow.sup_id }}</span>-->
           <div class="rate_select">
             <span class="rate_select_name">统计频率:</span>
-            <el-select v-model="value" placeholder="请选择" size="mini">
+            <el-select v-model="syncType" placeholder="请选择" size="mini" @change="handleSelectChange">
               <el-option
-                v-for="item in options"
-                :key="item.value"
+                v-for="item in syncTypeMap"
+                :key="item.syncType"
                 :label="item.label"
-                :value="item.value">
+                :value="item.syncType">
               </el-option>
             </el-select>
           </div>
@@ -81,7 +81,7 @@
           <el-table
             :data="tableRightData"
             border
-            @sort-change="handleSortHistory"
+            @sort-change="handleJobStatisticsListSort"
             style="width: 100%">
             <el-table-column
               align="center"
@@ -135,6 +135,7 @@
 
 <script>
 // import _ from 'lodash'
+import { syncTypeMap, JobStatisticsLatestSize } from '@/assets/js/utils'
 import * as echarts from 'echarts'
 import { dateFormat, jobApi } from '@/api/api'
 
@@ -142,28 +143,18 @@ export default {
   name: 'dashboard',
   data () {
     return {
-      value: '5',
-      options: [{
-        value: '5',
-        label: '每5分钟'
-      }, {
-        value: '60',
-        label: '每小时'
-      }, {
-        value: '1440',
-        label: '每天'
-      }, {
-        value: '10080',
-        label: '每周'
-      }],
-      syncTime: 5,
+      syncType: '0',
+      syncTypeMap,
       page: 1,
       pageSize: 10,
       count: 1,
       currentPage: 1,
-      origin_order: 'success_rate',
-      order: '-success_rate',
-      myChart: null,
+      jobId: '',
+      order_left_base: '-success_rate',
+      order_right_base: '-statistics_time',
+      order_left: '-success_rate',
+      order_right: '-statistics_time',
+      myEcharts: null,
       tableLeftDataRow: {},
       tableLeftData: [],
       tableRightData: [],
@@ -176,6 +167,13 @@ export default {
     this.getJobStatisticsLatest()
   },
   methods: {
+    tableRowClassName ({
+      row,
+      rowIndex
+    }) {
+      if (row.job_id === this.jobId) return 'selected-row'
+      return ''
+    },
     indexMethod (index) {
       return index + 1
     },
@@ -183,45 +181,45 @@ export default {
       const params = {
         page: this.page,
         page_size: this.pageSize,
-        order: this.order
+        order: this.order_left
       }
       jobApi.get_job_statistics_latest(params).then(value => {
         this.tableLeftData = value.data.results
+        this.jobId = value.data.results ? value.data.results[0].job_id : ''
         this.count = value.data.count
-        this.tableLeftDataRow = value.data.results ? value.data.results[0] : []
-        this.myEcharts(this.tableLeftDataRow ? this.tableLeftDataRow.job_id : '')
+        this.genCharts()
+        this.getJobStatistics()
       })
     },
     handleSortDash (column) {
-      this.order = (column.order === 'ascending' ? '' : '-') + (column.prop ? column.prop : this.origin_order)
+      if (column.prop) {
+        this.order_left = (column.order === 'ascending' ? '' : '-') + column.prop
+      } else {
+        this.order_left = this.order_left_base
+      }
       this.getJobStatisticsLatest()
     },
-    handleSizeChange (val) {
-      this.page = Math.ceil(this.pageSize * this.page / val)
-      this.pageSize = val
-      this.getJobStatisticsLatest()
+    handleDetailLeft (scope) {
+      this.jobId = scope.row.job_id
+      this.genCharts()
+      this.getJobStatistics()
     },
     handleCurrentChange (val) {
       this.page = val
       this.getJobStatisticsLatest()
     },
-    handleDetailLeft (scope) {
-      this.tableLeftDataRow = scope.row
-      this.myEcharts(scope.row.job_id)
-    },
-    myEcharts (jobId) {
+    genCharts () {
       const para = {
-        job_id: jobId
+        job_id: this.jobId,
+        rate: this.syncType
       }
       jobApi.get_job_statistics_report(para).then(v => {
-        // console
-        this.tableRightData = v.data.table
         const yNoMax = v.data.report ? Math.max(...v.data.report.data_y_no) : 400
         const yNoMaxShow = (parseInt(yNoMax / 100) + 1) * 100
-        if (this.myChart) {
-          this.myChart.dispose()
+        if (this.myEcharts) {
+          this.myEcharts.dispose()
         }
-        this.myChart = echarts.init(document.getElementById('main'))
+        this.myEcharts = echarts.init(document.getElementById('main'))
         const color = ['#143f68', '#EE6666']
         const option = {
           color: color,
@@ -306,14 +304,37 @@ export default {
             }
           ]
         }
-        this.myChart.setOption(option)
+        this.myEcharts.setOption(option)
       }).catch(function (error) {
         console.log(23, error)
       })
     },
+    getJobStatistics () {
+      const param = {
+        rate: this.syncType,
+        job_id: this.jobId,
+        order: this.order_right,
+        page_size: JobStatisticsLatestSize
+      }
+      jobApi.get_job_statistics(param).then(v => {
+        this.tableRightData = v.data.results
+      })
+    },
+    handleSelectChange (value) {
+      this.syncType = value
+      this.genCharts()
+      this.getJobStatistics()
+    },
+    handleJobStatisticsListSort (column) {
+      if (column.prop) {
+        this.order_right = (column.order === 'ascending' ? '' : '-') + column.prop
+      } else {
+        this.order_right = this.order_right_base
+      }
+      this.getJobStatistics()
+    },
     handleDetailRight (scope) {
       const statisticsTime = scope.row.statistics_time
-      console.log(18, statisticsTime)
       const stamp = Date.parse(statisticsTime.replace(/-/g, '/'))
       const startTime = dateFormat(
         'YYYY-mm-dd HH:MM:SS', new Date(stamp - 60 * this.syncTime * 1000))
@@ -323,21 +344,14 @@ export default {
         jobId: scope.row.job_id,
         statisticsTime: statisticsTime
       }
-      console.log(19, data)
       // 参数传不了时间对象，传了也会自动转为时间字符串
       this.$router.push({
         name: 'JobDetail',
         params: data
       })
     },
-    handleSortHistory (columns) {
-      const params = {
-        order: ''
-      }
-      jobApi.get_job_statistics(params)
-    },
     moreHistory () {
-      const data = { jobId: this.tableLeftDataRow.job_id }
+      const data = { jobId: this.jobId }
       this.$router.push({
         name: 'JobList',
         params: data
@@ -367,6 +381,12 @@ export default {
   .el-table.table_left {
     margin-top: 60px;
   }
+
+  .el-table .selected-row {
+    background: #f6f8fa;
+    font-size: 13px;
+    color: #f5970e;
+  }
 }
 
 .left_header_span {
@@ -376,7 +396,7 @@ export default {
   line-height: 36px;
   transform: translateX(-50%);
   border-radius: 3px;
-  background-color: #E9EEF3;
+  background-color: #f6f8fa;
   color: #093252;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   font-weight: bold;
