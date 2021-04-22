@@ -61,8 +61,8 @@
       <el-card>
         <div class="report_header">
           <span class="span_name">工单编号:</span><span class="span_value">{{ jobId }}</span>
-          <!--          <span class="span_name">需方编号:</span><span class="span_value">{{ tableLeftDataRow.dem_id }}</span>-->
-          <!--          <span class="span_name">供方编号:</span><span class="span_value">{{ tableLeftDataRow.sup_id }}</span>-->
+                    <span class="span_name">需方编号:</span><span class="span_value">{{ demId }}</span>
+                    <span class="span_name">供方编号:</span><span class="span_value">{{ supId }}</span>
           <div class="rate_select">
             <span class="rate_select_name">统计频率:</span>
             <el-select v-model="syncType" placeholder="请选择" size="mini" @change="handleSelectChange">
@@ -150,12 +150,13 @@ export default {
       count: 1,
       currentPage: 1,
       jobId: '',
+      demId: '',
+      supId: '',
       order_left_base: '-success_rate',
       order_right_base: '-statistics_time',
       order_left: '-success_rate',
       order_right: '-statistics_time',
       myEcharts: null,
-      tableLeftDataRow: {},
       tableLeftData: [],
       tableRightData: [],
       reportDataX: [],
@@ -186,6 +187,8 @@ export default {
       jobApi.get_job_statistics_latest(params).then(value => {
         this.tableLeftData = value.data.results
         this.jobId = value.data.results ? value.data.results[0].job_id : ''
+        this.demId = value.data.results ? value.data.results[0].dem_id : ''
+        this.supId = value.data.results ? value.data.results[0].sup_id : ''
         this.count = value.data.count
         this.genCharts()
         this.getJobStatistics()
@@ -201,6 +204,8 @@ export default {
     },
     handleDetailLeft (scope) {
       this.jobId = scope.row.job_id
+      this.demId = scope.row.dem_id
+      this.supId = scope.row.sup_id
       this.genCharts()
       this.getJobStatistics()
     },
