@@ -1,35 +1,35 @@
 <template>
   <el-container class="home-container">
-    <el-header>
-      <div>
-        <img src="../assets/img/brand_.png" alt="暂无图片">
-        <span>工单监控管理系统</span>
-      </div>
-      <el-button type="warning" @click="logout" size="small">退出</el-button>
-    </el-header>
+<!--    <el-header>-->
+<!--      <div>-->
+<!--        <img src="../assets/img/brand_.png" alt="暂无图片">-->
+<!--        <span>工单监控管理系统</span>-->
+<!--      </div>-->
+<!--      <el-button type="warning" @click="logout" size="small">退出</el-button>-->
+<!--    </el-header>-->
     <el-container>
-      <el-aside width="200px">
-        <el-menu
-          :uniqueOpened="true"
-          :default-active=$route.path
-          class="el-menu-vertical-demo"
-          background-color="#1E263E"
-          text-color="#fff"
-          active-text-color="#ffd04b"
-          router>
-          <el-submenu index="1">
-            <template #title>
-              <!--              <i class="el-icon-location"></i>-->
-              <span>首页</span>
-            </template>
-            <el-menu-item :index="obj.path" :key="index" v-for="(obj, index) in aside_menu_li">
-              <template #title>
-                <span>{{ obj.name }}</span>
-              </template>
-            </el-menu-item>
-          </el-submenu>
-        </el-menu>
-      </el-aside>
+<!--      <el-aside width="200px">-->
+<!--        <el-menu-->
+<!--          :uniqueOpened="true"-->
+<!--          :default-active=$route.path-->
+<!--          class="el-menu-vertical-demo"-->
+<!--          background-color="#1E263E"-->
+<!--          text-color="#fff"-->
+<!--          active-text-color="#ffd04b"-->
+<!--          router>-->
+<!--          <el-submenu index="1">-->
+<!--            <template #title>-->
+<!--              &lt;!&ndash;              <i class="el-icon-location"></i>&ndash;&gt;-->
+<!--              <span>首页</span>-->
+<!--            </template>-->
+<!--            <el-menu-item :index="obj.path" :key="index" v-for="(obj, index) in aside_menu_li">-->
+<!--              <template #title>-->
+<!--                <span>{{ obj.name }}</span>-->
+<!--              </template>-->
+<!--            </el-menu-item>-->
+<!--          </el-submenu>-->
+<!--        </el-menu>-->
+<!--      </el-aside>-->
       <el-main>
         <!-- 路由占位符 -->
         <router-view></router-view>
