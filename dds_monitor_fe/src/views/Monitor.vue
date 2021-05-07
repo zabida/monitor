@@ -16,16 +16,16 @@
         </el-date-picker>
       </div>
       <div class="search_item">
-        <span class="search_item_name">工单编号</span>
-        <el-input placeholder="工单编号" v-model="jobId"></el-input>
+        <span class="search_item_name">需方编号</span>
+        <el-input placeholder="需方编号" v-model="demId"></el-input>
       </div>
       <div class="search_item">
         <span class="search_item_name">供方编号</span>
         <el-input placeholder="供方编号" v-model="supId"></el-input>
       </div>
       <div class="search_item">
-        <span class="search_item_name">需方编号</span>
-        <el-input placeholder="需方编号" v-model="demId"></el-input>
+        <span class="search_item_name">工单编号</span>
+        <el-input placeholder="工单编号" v-model="jobId"></el-input>
       </div>
       <div class="search_item">
         <span class="search_item_name">code</span>
@@ -114,25 +114,25 @@
 import { jobApi, dateFormat } from '@/api/api'
 
 export default {
-  name: 'jobList',
+  name: 'monitor',
   data () {
     return {
-      syncTime: 5,
       jobId: '',
       supId: '',
       demId: '',
+      code: '',
       timeStartEnd: [],
       currentPage: 1,
       page: 1,
       pageSize: 10,
       count: 1,
-      order: '-job_id',
+      order: '-created_at',
       rowData: {
         job_id: '',
         dem_id: '',
         sup_id: '',
-        sum_use: '',
-        avg_cost: ''
+        cost: '',
+        code: ''
       },
       tableData: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]
     }
@@ -145,11 +145,13 @@ export default {
       const startTime = this.timeStartEnd.length === 0 ? '' : dateFormat('YYYY-mm-dd HH:MM:SS', this.timeStartEnd[0])
       const endTime = this.timeStartEnd.length === 0 ? '' : dateFormat('YYYY-mm-dd HH:MM:SS', this.timeStartEnd[1])
       const params = {
+        type: 'monitor',
         start_time: startTime,
         end_time: endTime,
         dem_id: this.demId,
         sup_id: this.supId,
         job_id: this.jobId,
+        code: this.code,
         page: this.page,
         page_size: this.pageSize,
         order: this.order
