@@ -138,7 +138,7 @@ export default {
       supId: '',
       code: '',
       msg: '',
-      timeStartEnd: '',
+      timeStartEnd: [],
       currentPage: 1,
       page: 1,
       pageSize: 10,

@@ -341,8 +341,11 @@ export default {
     handleDetailRight (scope) {
       const statisticsTime = scope.row.statistics_time
       const stamp = Date.parse(statisticsTime.replace(/-/g, '/'))
-      const startTime = dateFormat(
-        'YYYY-mm-dd HH:MM:SS', new Date(stamp - 60 * this.syncTime * 1000))
+      const obj = {}
+      syncTypeMap.map((item) => {
+        obj[item.syncType] = item.seconds
+      })
+      const startTime = dateFormat('YYYY-mm-dd HH:MM:SS', new Date(stamp - obj[this.syncType] * 1000))
       const endTime = dateFormat('YYYY-mm-dd HH:MM:SS', new Date(stamp))
       const data = {
         timeStartEnd: [startTime, endTime],
