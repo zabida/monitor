@@ -103,12 +103,14 @@
 
 <script>
 import { jobApi, dateFormat } from '@/api/api'
+import { syncTypeMap } from '@/assets/js/utils'
 
 export default {
   name: 'jobList',
   data () {
     return {
-      syncTime: 5,
+      syncType: '0',
+      syncTypeMap,
       jobId: '',
       supId: '',
       demId: '',
@@ -158,7 +160,11 @@ export default {
       const statisticsTime = rowData.statistics_time
       console.log(200, statisticsTime)
       const stamp = Date.parse(statisticsTime.replace(/-/g, '/'))
-      const startTime = dateFormat('YYYY-mm-dd HH:MM:SS', new Date(stamp - 60 * this.syncTime * 1000))
+      const obj = {}
+      syncTypeMap.map((item) => {
+        obj[item.syncType] = item.seconds
+      })
+      const startTime = dateFormat('YYYY-mm-dd HH:MM:SS', new Date(stamp - obj[this.syncType] * 1000))
       const endTime = dateFormat('YYYY-mm-dd HH:MM:SS', new Date(stamp))
       const data = {
         statisticsTime: statisticsTime,
