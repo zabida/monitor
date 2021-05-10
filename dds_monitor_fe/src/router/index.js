@@ -4,6 +4,7 @@ import Login from '../views/Login'
 import Home from '../views/Home'
 import DashBoard from '../views/Dashboard'
 import JobList from '../views/JobList'
+import MyTest from '../views/MyTest'
 // import JobDetail from '../views/JobDetail'
 // import Monitor from '../views/Monitor'
 
@@ -25,7 +26,7 @@ const routes = [
     redirect: '/dashboard',
     children: [
       {
-        path: '/dashBoard',
+        path: '/dashboard',
         name: 'DashBoard',
         component: DashBoard
       },
@@ -33,6 +34,11 @@ const routes = [
         path: '/jobList',
         name: 'JobList',
         component: JobList
+      },
+      {
+        path: '/my_test',
+        name: 'MyTest',
+        component: MyTest
       }
       // {
       //   path: '/jobDetail',

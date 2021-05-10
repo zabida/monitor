@@ -52,6 +52,10 @@ export default {
         {
           path: '/jobList',
           name: '日志列表'
+        },
+        {
+          path: '/my_test',
+          name: 'iframeTest'
         }
         // {
         //   path: '/jobDetail',
