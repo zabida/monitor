@@ -11,7 +11,7 @@ axios.defaults.headers.patch['Content-Type'] = 'application/json'
 
 let loadingGvm = null
 const config = {
-  baseURL: process.env.NODE_ENV === 'development' ? '/m_api' : location.protocol + '//' + location.host + '/m_api',
+  baseURL: process.env.NODE_ENV === 'development' ? '/mt/m_api' : location.protocol + '//' + location.host + '/mt/m_api',
   timeout: 6000000,
   withCredentials: false
 }

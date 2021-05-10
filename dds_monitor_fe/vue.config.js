@@ -1,5 +1,5 @@
 module.exports = {
-  publicPath: './',
+  publicPath: '/mt/',
   // 输出文件目录
   outputDir: 'monitor-fe',
   // 静态资源存放的文件夹(相对于ouputDir)
