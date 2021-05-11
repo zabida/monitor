@@ -10,7 +10,9 @@ export default {
   data () {
     return {
       // src: monitorServerURL + 'jobList',
+      // src: 'https://www.baidu.com',
       src: 'https://www.baidu.com',
+      // src: 'http://monitor_tie.test.cn/#/dashboard',
       iframeWin: {}
     }
   },

@@ -82,11 +82,12 @@ export default {
           password: this.loginForm.password
         }
         console.log(1, this.$store.state.user)
-        loginApi.login(obj).then(value => {
-          this.$store.commit('user/set_token', value.token)
-          this.$store.commit('user/set_username', value.nickname)
-          this.$router.push({ path: '/home' })
-        })
+        this.$router.push({ path: '/home' })
+        // loginApi.login(obj).then(value => {
+        //   this.$store.commit('user/set_token', value.token)
+        //   this.$store.commit('user/set_username', value.nickname)
+        //   this.$router.push({ path: '/home' })
+        // })
       })
       // this.$refs.loginFormRef.validate((valid) => {
       //   if (valid) {
